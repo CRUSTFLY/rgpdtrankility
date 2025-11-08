@@ -208,7 +208,7 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.pipe(stream);
 
 		// Construire le chemin absolu vers le dossier fonts
-		const fontsDir = path.join(process.cwd(), "public", "fonts");
+		const fontsDir = path.join("public", "fonts");
 
 		// Enregistrer les polices
 		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
