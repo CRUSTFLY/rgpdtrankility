@@ -110,7 +110,7 @@
         result.textContent = "⏳ Génération en cours...";
 
         try {
-			const res = await fetch("/generate", {
+			const res = await fetch("https://rgpdtrankility.vercel.app/generate", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege }),
