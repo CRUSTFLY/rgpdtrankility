@@ -1,0 +1,67 @@
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulaire auto-sauvegardé</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; }
+fieldset { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+legend { font-weight: bold; }
+input { display: block; width: 100%; margin-bottom: 10px; padding: 8px; }
+button { padding: 10px 15px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<form id="autoForm">
+
+  <!-- Étape 1 : Informations dirigeant -->
+  <fieldset>
+    <legend>Informations personnelles du dirigeant</legend>
+    <input type="text" id="nom" placeholder="Nom" required>
+    <input type="text" id="prenom" placeholder="Prénom" required>
+  </fieldset>
+
+  <!-- Étape 2 : Informations société -->
+  <fieldset>
+    <legend>Informations de la société</legend>
+    <input type="text" id="entreprise" placeholder="Nom de société" required>
+    <input type="text" id="sigle" placeholder="Sigle de la société">
+    <input type="text" id="adressesiege" placeholder="Adresse du siège" required>
+    <input type="text" id="cpsiege" placeholder="Code Postal" required>
+    <input type="text" id="villesiege" placeholder="Ville" required>
+    <input type="text" id="numtelsiege" placeholder="Numéro de téléphone" required>
+  </fieldset>
+
+  <button type="submit">Valider</button>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Charger les données depuis localStorage
+  const savedData = JSON.parse(localStorage.getItem("autoFormData")) || {};
+  for (const [key, value] of Object.entries(savedData)) {
+    const input = document.getElementById(key);
+    if (input) input.value = value;
+  }
+
+  // Sauvegarde automatique à chaque saisie
+  document.querySelectorAll("#autoForm input").forEach(input => {
+    input.addEventListener("input", () => {
+      const data = JSON.parse(localStorage.getItem("autoFormData")) || {};
+      data[input.id] = input.value;
+      localStorage.setItem("autoFormData", JSON.stringify(data));
+    });
+  });
+
+  // Soumission finale
+  document.getElementById("autoForm").addEventListener("submit", e => {
+    e.preventDefault();
+    alert("Formulaire soumis ! Les données sont sauvegardées automatiquement.");
+    console.log(JSON.parse(localStorage.getItem("autoFormData")));
+  });
+});
+</script>
+
+</body>
+</html>
