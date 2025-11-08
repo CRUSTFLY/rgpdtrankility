@@ -207,9 +207,12 @@ Selon le droit applicable, vous disposez du droit de :
 		const stream = fs.createWriteStream(pdfPath);
 		pdfDoc.pipe(stream);
 
-		// ---- Enregistrer la police Calibri ----
-		pdfDoc.registerFont("Calibri Light", "fonts/calibril.ttf");
-		pdfDoc.registerFont("Calibri Bold", "fonts/calibrib.ttf");
+		// Construire le chemin absolu vers le dossier fonts
+		const fontsDir = path.join(process.cwd(), "public", "fonts");
+
+		// Enregistrer les polices
+		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
+		pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
 		
 		  // ---- Nettoyage du texte ----
 		const clean = txt =>
