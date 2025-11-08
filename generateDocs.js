@@ -208,8 +208,8 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.pipe(stream);
 
 		// ---- Enregistrer la police Calibri ----
-		pdfDoc.registerFont("Calibri Light", "https://rgpdtrankility.vercel.app/fonts/calibril.ttf");
-		pdfDoc.registerFont("Calibri Bold", "https://rgpdtrankility.vercel.app/fonts/calibrib.ttf");
+		pdfDoc.registerFont("Calibri Light", "fonts/calibril.ttf");
+		pdfDoc.registerFont("Calibri Bold", "fonts/calibrib.ttf");
 		
 		  // ---- Nettoyage du texte ----
 		const clean = txt =>
