@@ -16,8 +16,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/downloads", express.static(path.join(__dirname, "downloads")));
 
 // Crée le dossier downloads si nécessaire
-const downloadsDir = path.join(__dirname, "downloads");
-if (!fs.existsSync(downloadsDir)) fs.mkdirSync(downloadsDir);
+const downloadsDir = path.join("/tmp", "downloads");
+if (!fs.existsSync(downloadsDir)) fs.mkdirSync(downloadsDir, { recursive: true });
 
 app.post("/generate", async (req, res) => {
   try {
