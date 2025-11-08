@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S'inscrire - RGPD Trankility</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+	  <div class="logo">
+		<a href="index.html">
+          <img src="images/logo_rgpd_trankility.png" alt="Logo RGPD Trankility">
+		</a>
+	  </div>
+        <nav>
+            <a href="login.html">Connexion</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="form-container">
+            <h2>Créer un compte</h2>
+            <form id="registerForm">
+                <label for="name">Nom :</label>
+                <input type="text" id="name" required>
+
+                <label for="email">Email :</label>
+                <input type="email" id="email" required>
+
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" required>
+
+                <button type="submit">S'inscrire</button>
+            </form>
+            <p>Déjà inscrit ? <a href="login.html">Se connecter</a></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RGPD Trankility. Tous droits réservés.</p>
+    </footer>
+
+    <script src="connexion.js"></script>
+	<script src="header.js"></script>
+</body>
+</html>

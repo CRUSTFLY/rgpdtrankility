@@ -1,0 +1,326 @@
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #000000;
+    line-height: 1.6;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background-color: #000000;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+}
+
+header .logo img {
+    width: 150px;  /* largeur du logo */
+    height: auto;  /* garder proportions */
+    margin-right: 1rem;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+header nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 2rem;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+header nav a:hover {
+    color: #ebc015;
+}
+
+/* ===== MAIN ===== */
+main {
+    width: 100%;
+    padding: 3rem 5%;
+}
+
+/* ===== TITRES PRINCIPAUX ===== */
+body h1 {
+    text-align: center;  
+    margin: 3rem 0 2rem 0;
+    font-size: 2.5rem;   
+    color: #000000;    
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+    background-color: #ebc015;
+    color: #000000;
+    text-align: center;
+    padding: 5rem 2rem;
+    border-radius: 10px;
+    margin-bottom: 3rem;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+}
+
+/* ===== BUTTONS ===== */
+.btn, form#form button, #result button {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    border-radius: 10px;
+    border: 2px solid #000000;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #000000;
+    color: #ebc015;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    text-decoration: none;
+}
+
+.btn:hover,
+form#form button:hover,
+#result button:hover {
+    background-color: #000000;
+    color: #ebc015;
+    border: 2px solid #ebc015;
+}
+
+form#form button {
+    width: 100%;
+    padding: 1rem 2rem;
+    background-color: #ebc015;
+    color: #000000;
+    font-size: 1.1rem;
+    border: none;
+}
+
+/* ===== FEATURES SECTION ===== */
+.features {
+    width: 90%;
+    max-width: 1600px;
+    margin: 0 auto 3rem auto;
+}
+
+.features h3 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.features ul {
+    list-style: disc inside;
+    font-size: 1.2rem;
+    line-height: 2rem;
+}
+
+/* ===== FORM CONTAINER ===== */
+form#form, .form-container {
+    width: 80%;
+    max-width: 600px;
+    margin: 3rem auto;
+    background-color: #ffffff;
+    padding: 2.5rem 3rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form#form input, .form-container form input {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+form#form input:focus, .form-container form input:focus {
+    outline: none;
+    border-color: #ebc015;
+    box-shadow: 0 0 5px #ebc015;
+}
+
+form#form p, .form-container p {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+}
+
+form#form p a, .form-container p a {
+    color: #ebc015;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+form#form p a:hover, .form-container p a:hover {
+    text-decoration: underline;
+}
+
+/* ===== ACCOUNT SECTION ===== */
+.account {
+    width: 90%;
+    max-width: 1000px;
+    margin: 3rem auto;
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.account h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.account p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* ===== RESULTATS ===== */
+#result {
+    width: 80%;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#result button {
+    margin: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background-color: #ebc015;
+    color: #000000;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    text-align: center;
+    padding: 2rem 5%;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+/* ===== MEDIA QUERIES ===== */
+@media (max-width: 1600px) {
+    main {
+        padding: 3rem 3%;
+    }
+
+    .hero h2 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .hero h2 {
+        font-size: 2rem;
+    }
+
+    form#form, #result, .form-container {
+        width: 90%;
+    }
+}
+
+/* ===== FORMULAIRES ===== */
+
+	.form-container {
+		background: white;
+		border-radius: 12px;
+		box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+		padding: 2rem;
+		width: 1500px;
+		max-width: 90%;       /* responsive sur petits écrans */
+		min-height: 500px;    /* optionnel : hauteur minimale */
+		display: flex;
+		flex-direction: column;
+		justify-content: center; /* centre le contenu verticalement */
+	}
+
+		/* Form steps */
+	.form-step {
+		display: none;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.form-step.active {
+		display: flex;
+	}
+
+    input, button {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+
+    button {
+      background: #ebc015;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #d3aa10;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .progress {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .progress div {
+      width: 25%;
+      height: 5px;
+      background: #ddd;
+      border-radius: 5px;
+    }
+
+    .progress div.active {
+      background: #ebc015;
+    }

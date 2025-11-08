@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Compte - RGPD Trankility</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* Layout principal */
+main {
+    display: flex;
+    min-height: 70vh;
+    margin: 20px;
+}
+
+/* Menu gauche */
+.menu {
+    width: 250px;
+    border-right: 1px solid #ccc;
+    padding-right: 20px;
+}
+
+.menu button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 8px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.menu button.active {
+    background-color: #d0d0d0;
+    font-weight: bold;
+}
+
+.menu button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Contenu à droite */
+.content {
+    flex: 1;
+    padding-left: 30px;
+}
+
+.content section {
+    display: none;
+}
+
+.content section.active {
+    display: block;
+}
+
+/* Formulaire simple */
+form input, form textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+}
+
+form button {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Historique */
+#historyList div {
+    border-bottom: 1px solid #ccc;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between; /* ✅ espace entre le contenu et le X */
+    align-items: center;
+    gap: 20px;
+	width: 1800px;
+}
+
+/* Contenu du document (texte + boutons) */
+#historyList .doc-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Boutons de téléchargement */
+#historyList .download-buttons {
+    display: flex;
+    gap: 15px; /* ✅ espace entre PDF, Word et ZIP */
+    margin-top: 8px;
+}
+
+#historyList .download-buttons a button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#historyList .download-buttons a:nth-child(1) button {
+    background-color: #ff4d4d; /* PDF rouge */
+    color: white;
+}
+
+#historyList .download-buttons a:nth-child(2) button {
+    background-color: #007bff; /* Word bleu */
+    color: white;
+}
+
+#historyList .download-buttons a:nth-child(3) button {
+    background-color: #28a745; /* ZIP vert */
+    color: white;
+}
+
+#historyList .download-buttons a button:hover {
+    opacity: 0.85;
+}
+
+/* Boutons de suppression X */
+#historyList button.deleteBtn {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 1.8em;
+    padding: 5px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+#historyList button.deleteBtn:hover {
+    color: darkred;
+}
+</style>
+</head>
+<body>
+<header>
+    <div class="logo">
+        <a href="index.html">
+            <img src="images/logo_rgpd_trankility.png" alt="Logo RGPD Trankility">
+        </a>
+    </div>
+    <nav>
+        <a href="login.html" id="logoutBtn">Déconnexion</a>
+    </nav>
+</header>
+
+<main>
+    <!-- Menu gauche -->
+    <div class="menu">
+        <button class="tab-btn active" data-tab="monCompte">Mon Compte</button>
+        <button class="tab-btn" data-tab="historiqueGeneration">Historique de génération</button>
+        <button class="tab-btn" data-tab="contactSupport">Contact & Support</button>
+    </div>
+
+    <!-- Contenu à droite -->
+    <div class="content">
+        <!-- Onglet Mon Compte -->
+        <section id="monCompte" class="active">
+            <h2 id="welcomeMsg">Bienvenue sur votre compte</h2>
+            <p>Gérez vos paramètres RGPD et consultez l’historique des consentements ici.</p>
+            <a href="generateurdocuments.html" class="btn">Accéder au Générateur de Documents</a>
+        </section>
+
+        <!-- Onglet Historique de génération -->
+        <section id="historiqueGeneration">
+            <h2>Historique de génération</h2>
+            <div id="historyList">
+                <p>Aucun document généré pour le moment.</p>
+            </div>
+        </section>
+
+        <!-- Onglet Contact & Support -->
+        <section id="contactSupport">
+            <h2>Contact & Support</h2>
+            <form id="contactForm" action="mailto:sr64410@gmail.com" method="post" enctype="text/plain">
+                <label for="name">Votre nom :</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Votre email :</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="message">Message :</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+
+                <button type="submit">Envoyer</button>
+            </form>
+        </section>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 RGPD Trankility. Tous droits réservés.</p>
+</footer>
+
+<script>
+    // Gestion utilisateur
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(currentUser) {
+        document.getElementById('welcomeMsg').textContent = `Bienvenue, ${currentUser.name} !`;
+    } else {
+        window.location.href = 'login.html';
+    }
+
+    // Gestion des onglets
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = document.querySelectorAll('.content section');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Désactiver tous les onglets
+            tabs.forEach(t => t.classList.remove('active'));
+            sections.forEach(s => s.classList.remove('active'));
+
+            // Activer l'onglet cliqué et sa section
+            tab.classList.add('active');
+            const section = document.getElementById(tab.dataset.tab);
+            section.classList.add('active');
+
+            // Si c'est l'onglet historique, afficher la liste
+            if(tab.dataset.tab === 'historiqueGeneration') {
+                showHistory();
+            }
+        });
+    });
+
+    // Affichage de l'historique avec suppression
+    function showHistory() {
+        if(!currentUser) return;
+        const historyKey = `history_${currentUser.name}`;
+        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+        const historyDiv = document.getElementById('historyList');
+
+        if(history.length === 0) {
+            historyDiv.innerHTML = "<p>Aucun document généré pour le moment.</p>";
+            return;
+        }
+
+        historyDiv.innerHTML = '';
+        history.slice().reverse().forEach((entry, index) => {
+            const div = document.createElement('div');
+
+            const infoDiv = document.createElement('div');
+            infoDiv.innerHTML = `
+                <strong>Généré le :</strong> ${entry.date}<br>
+                <a href="${entry.pdfUrl}" download><button>PDF</button></a>
+                <a href="${entry.docxUrl}" download><button>Word</button></a>
+                <a href="${entry.zipUrl}" download><button>ZIP</button></a>
+            `;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = "❌";
+            deleteBtn.classList.add('deleteBtn');
+            deleteBtn.title = "Supprimer cet élément";
+
+            deleteBtn.addEventListener('click', () => {
+                const realIndex = history.length - 1 - index;
+                history.splice(realIndex, 1);
+                localStorage.setItem(historyKey, JSON.stringify(history));
+                showHistory();
+            });
+
+            div.appendChild(infoDiv);
+            div.appendChild(deleteBtn);
+            historyDiv.appendChild(div);
+        });
+    }
+</script>
+<script src="header.js"></script>
+</body>
+</html>
