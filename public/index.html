@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RGPD Trankility - Accueil</title>
-    <link rel="stylesheet" href="style.css">
+    <title>RGPD Trankility - Automatisation de votre conformité</title>
+    <link rel="stylesheet" href="style-accueil.css">
+    <meta name="description" content="RGPD Trankility automatise la mise en conformité RGPD de votre entreprise grâce à l'IA, à la génération de documents et à un DPO certifié.">
 </head>
 <body>
     <header>
@@ -20,96 +21,99 @@
     </header>
 
     <main>
-        <!-- Section principale -->
+        <!-- Section Hero -->
         <section class="hero">
-            <h2>Protégez facilement les données de vos utilisateurs</h2>
-            <p>RGPD Trankility vous aide à gérer la conformité RGPD de votre site ou application rapidement et efficacement.</p>
+            <h1>Automatisez la conformité RGPD de votre entreprise</h1>
+            <p>RGPD Trankility vous accompagne avec des outils intelligents et un support expert pour assurer votre conformité sans stress.</p>
             <a id="startBtn" href="#" class="btn">Commencer maintenant</a>
         </section>
 
-        <!-- Nouvelle section : Offres / Tarifs -->
+        <!-- Section Avantages -->
+        <section class="features">
+            <h2>Pourquoi choisir RGPD Trankility ?</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>🧾 Génération automatique de documents</h3>
+                    <p>Créez vos politiques de confidentialité, registres et autres documents RGPD en un clic grâce à notre générateur intelligent.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🤖 IA RGPD</h3>
+                    <p>Posez vos questions directement à notre assistant juridique IA spécialisé dans la conformité RGPD.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>👨‍💼 Support par un DPO certifié</h3>
+                    <p>Bénéficiez d’un accompagnement personnalisé par un expert certifié pour gérer vos obligations et contrôles CNIL.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>📊 Suivi de conformité</h3>
+                    <p>Visualisez en temps réel votre niveau de conformité et suivez l’évolution de vos démarches documentaires.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Tarifs -->
         <section class="pricing">
-            <h2>Nos Offres</h2>
+            <h2>Nos offres</h2>
+            <p>Choisissez le niveau d’automatisation adapté à votre entreprise.</p>
+
             <div class="pricing-container">
-                <!-- Offre 1 -->
+                <!-- Pallier 1 -->
                 <div class="pricing-card">
-                    <h4>Basique</h4>
+                    <h3>Pallier 1 : Essentiel</h3>
                     <ul>
-                        <li>Suivi du consentement</li>
-                        <li>Tableau de bord simplifié</li>
-                        <li>1 site inclus</li>
+                        <li>IA RGPD pour répondre à vos questions</li>
+                        <li>Suivi de votre base documentaire</li>
+                        <li>Mises à jour régulières</li>
                     </ul>
                     <p class="price">19,99 €/mois</p>
                     <a href="#" class="btn">Payer</a>
                 </div>
 
-                <!-- Offre 2 -->
-                <div class="pricing-card">
-                    <h4>Essentiel</h4>
+                <!-- Pallier 2 -->
+                <div class="pricing-card highlight">
+                    <h3>Pallier 2 : Avancé</h3>
                     <ul>
-                        <li>Tout du plan Essentiel</li>
-                        <li>Rapports automatisés</li>
-                        <li>Jusqu’à 5 sites</li>
+                        <li>Toutes les fonctionnalités du Pallier 1</li>
+                        <li>+ Génération automatique de documents RGPD</li>
                     </ul>
                     <p class="price">39,99 €/mois</p>
                     <a href="#" class="btn">Payer</a>
                 </div>
 
-                <!-- Offre 3 -->
+                <!-- Pallier 3 -->
                 <div class="pricing-card">
-                    <h4>Pro</h4>
+                    <h3>Pallier 3 : Expert</h3>
                     <ul>
-                        <li>Tout du plan Pro</li>
-                        <li>Support prioritaire</li>
-                        <li>Nombre illimité de sites</li>
+                        <li>Toutes les fonctionnalités du Pallier 2</li>
+                        <li>+ Support par un DPO certifié</li>
+                        <li>+ Accompagnement mensuel</li>
                     </ul>
                     <p class="price">69,99 €/mois</p>
                     <a href="#" class="btn">Payer</a>
                 </div>
             </div>
         </section>
-
-        <section class="features">
-            <h3>Fonctionnalités</h3>
-            <ul>
-                <li>Consentement clair et transparent</li>
-                <li>Gestion des préférences utilisateur</li>
-                <li>Historique des consentements</li>
-                <li>Interface simple et intuitive</li>
-            </ul>
-        </section>
     </main>
 
     <footer>
-        <p>&copy; 2025 RGPD Trankility. Tous droits réservés.</p>
+        <p>&copy; 2025 RGPD Trankility — Tous droits réservés.</p>
     </footer>
 
     <script src="header.js"></script>
-<script>
-	document.addEventListener('DOMContentLoaded', () => {
-	const startBtn = document.getElementById('startBtn');
-	if (!startBtn) {
-		console.error('startBtn introuvable');
-		return;
-	}
+    <script>
+        // Bouton "Commencer maintenant" dynamique selon l'état de connexion
+        document.addEventListener('DOMContentLoaded', () => {
+            const startBtn = document.getElementById('startBtn');
+            if (!startBtn) return;
 
-	// Nom de la clé localStorage à vérifier — adapte si nécessaire
-	const storageKey = 'isLoggedIn';
-	
-	// optionnel : définir par défaut l'href visible (ne suffit pas toujours)
-	startBtn.setAttribute('href', localStorage.getItem(storageKey) === 'true' ? 'account.html' : 'register.html');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const target = isLoggedIn ? 'account.html' : 'register.html';
 
-	// Ecouteur de clic robuste : force la redirection même si un autre script a preventDefault()
-	startBtn.addEventListener('click', function (e) {
-	e.preventDefault(); // on empêche le comportement par défaut pour contrôler la nav
-    const isLoggedIn = localStorage.getItem(storageKey) === 'true';
-    const target = isLoggedIn ? 'account.html' : 'register.html';
-    console.log(`Bouton "Commencer maintenant" cliqué — isLoggedIn=${isLoggedIn} -> ${target}`);
-    // utilisation de assign pour une redirection standard
-    window.location.assign(target);
-	}, { passive: false, capture: false });
-});
-</script>
-
+            startBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.assign(target);
+            });
+        });
+    </script>
 </body>
 </html>
