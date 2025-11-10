@@ -1,25 +1,26 @@
 import express from "express";
 import cors from "cors";
-import { generateRGPDInMemory } from "./Politique_confidentialite_generale_RGPD.js";
+import { generateDocuments } from "./generateDocs.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.post("/generate", async (req, res) => {
-  try {
-    const zipStream = await generateRGPDInMemory(req.body);
+    try {
+        const { formData, documentType } = req.body;
+        const zipStream = await generateDocuments(formData, documentType);
 
-    res.set({
-      "Content-Type": "application/zip",
-      "Content-Disposition": 'attachment; filename="Politique_RGPD.zip"',
-    });
+        res.set({
+            "Content-Type": "application/zip",
+            "Content-Disposition": 'attachment; filename="documents.zip"',
+        });
 
-    zipStream.pipe(res);
-  } catch (err) {
-    console.error("Erreur serveur:", err);
-    res.status(500).json({ error: err.message });
-  }
+        zipStream.pipe(res);
+    } catch (err) {
+        console.error("Erreur serveur:", err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
