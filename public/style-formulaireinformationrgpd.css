@@ -1,12 +1,12 @@
-/* ===== FORMULAIRE RGPD (formulaireinformationrgpd.html) ===== */
+/* ===== FORMULAIRE RGPD DIRECT SUR LA PAGE ===== */
 #FormulaireRGPD {
     width: 90%;
     max-width: 1000px;
     margin: 3rem auto;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    padding: 2rem 3rem;
+    background: transparent;        /* pas de fond global */
+    border-radius: 0;               /* coins carrés */
+    box-shadow: none;               /* pas d'ombre globale */
+    padding: 0;
     color: #000;
 }
 
@@ -18,49 +18,46 @@
     color: #000;
 }
 
+/* Conteneur interne */
 #formulaireContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
     width: 100%;
+    padding: 0;
 }
 
-/* ===== STYLE DU IFRAME ===== */
+/* On n’utilise plus l’iframe */
 #formulaireContainer iframe {
-    width: 100%;
-    height: 700px;
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: none;
 }
 
-/* ===== STYLE INTERNE DU FORMULAIRE AUTO-SAVE ===== */
+/* ===== FORMULAIRE DIRECT ===== */
 form#autoForm {
-    width: 90%;
+    width: 100%;
     max-width: 700px;
-    margin: 2rem auto;
-    background-color: #fff;
-    padding: 2rem 3rem;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    margin: 0 auto;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     color: #000;
 }
 
-/* FIELDSETS */
+/* FIELDSETS : jaune clair pour délimiter les sections */
 form#autoForm fieldset {
-    border: 2px solid #ebc015;
+    border: 2px solid #ebc015;       /* bordure dorée */
     border-radius: 10px;
     padding: 1.5rem;
-    background-color: #fff8d5;
+    background-color: #fff8d5;       /* jaune clair */
 }
 
 form#autoForm legend {
     font-weight: 700;
     color: #000;
-    padding: 0 0.5rem;
+    padding: 0;
+    margin-bottom: 0.5rem;
 }
 
 /* INPUTS */
@@ -69,7 +66,7 @@ form#autoForm input {
     width: 100%;
     padding: 0.9rem 1rem;
     margin-top: 0.5rem;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -79,7 +76,7 @@ form#autoForm input {
 form#autoForm input:focus {
     outline: none;
     border-color: #ebc015;
-    box-shadow: 0 0 6px #ebc015;
+    box-shadow: 0 0 4px #ebc015;
 }
 
 /* BUTTON */
@@ -89,10 +86,10 @@ form#autoForm button {
     font-weight: 600;
     padding: 1rem 2rem;
     border: 2px solid #000;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    align-self: center;
+    align-self: flex-start;
 }
 
 form#autoForm button:hover {
@@ -106,15 +103,11 @@ form#autoForm button:hover {
 @media (max-width: 768px) {
     #FormulaireRGPD {
         width: 95%;
-        padding: 1.5rem;
-    }
-
-    #formulaireContainer iframe {
-        height: 800px;
+        padding: 0;
     }
 
     form#autoForm {
         width: 100%;
-        padding: 1.5rem;
+        padding: 0;
     }
 }
