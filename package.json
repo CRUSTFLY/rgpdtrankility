@@ -14,7 +14,8 @@
     "express": "^4.21.2",
     "node-fetch": "^3.3.2",
     "pdfkit": "^0.15.2",
-    "puppeteer": "^24.29.1"
+    "puppeteer": "^24.29.1",
+    "stream-buffers": "^3.0.3"
   },
   "keywords": [],
   "author": "",
