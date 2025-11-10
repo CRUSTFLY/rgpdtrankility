@@ -1,34 +1,18 @@
 import express from "express";
 import cors from "cors";
-import { generateDocuments } from "./generateDocs.js";
+import { generateRGPDInMemory } from "./Politique_confidentialite_generale_RGPD.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// POST pour générer un ZIP contenant PDF + DOCX
 app.post("/generate", async (req, res) => {
   try {
-    const { formData, documentType } = req.body;
-
-    // Génération des fichiers en mémoire
-    const { pdfBuffer, docxBuffer } = await generateDocuments(formData, documentType);
-
-    // Génération du ZIP en mémoire
-    import archiver from "archiver";
-    import { PassThrough } from "stream";
-
-    const zipStream = new PassThrough();
-    const archive = archiver("zip", { zlib: { level: 9 } });
-
-    archive.pipe(zipStream);
-    archive.append(pdfBuffer, { name: "document.pdf" });
-    archive.append(docxBuffer, { name: "document.docx" });
-    archive.finalize();
+    const zipStream = await generateRGPDInMemory(req.body);
 
     res.set({
       "Content-Type": "application/zip",
-      "Content-Disposition": 'attachment; filename="documents.zip"',
+      "Content-Disposition": 'attachment; filename="Politique_RGPD.zip"',
     });
 
     zipStream.pipe(res);
