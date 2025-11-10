@@ -1,36 +1,31 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import PDFDocument from "pdfkit";
 import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumber } from "docx";
 import archiver from "archiver";
-import express from "express";
-
-/**
- * Génère PDF, DOCX et ZIP à partir des infos nom/prenom/date/entreprise
- * @param {string} nom
- * @param {string} prenom
- * @param {string} entreprise
- * @param {string} sigle
- * @param {string} adressesiege
- * @param {string} cpsiege
- * @param {string} villesiege
- * @param {string} numtelsiege
- * @param {string} downloadsDir
- * @returns {Promise<{pdfPath:string, docxPath:string, zipPath:string}>}
- */
 
 // ===== Variable pour le nom du fichier =====
 const nomFichier = "Politique de confidentialité générale RGPD"; // <-- change ici le nom du document
-	
-export async function generateDocuments(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege, downloadsDir) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const baseName = `${nom}_${prenom}_${Date.now()}`;
-	  const pdfPath = path.join(downloadsDir, `${nomFichier}.pdf`);
-      const docxPath = path.join(downloadsDir, `${nomFichier}.docx`);
-      const zipPath = path.join(downloadsDir, `${nomFichier}.zip`);
-	 
-      // --- Texte ---
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Construire le chemin absolu vers le dossier fonts
+const fontsDir = path.join(__dirname, "public", "fonts");
+		
+// Construire le chemin absolu vers le dossier images
+const imagesDir = path.join(__dirname, "public", "images");
+
+export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege, downloadsDir) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const timestamp = Date.now();
+            const pdfPath = path.join(downloadsDir, `Politique_RGPD_${timestamp}.pdf`);
+            const docxPath = path.join(downloadsDir, `Politique_RGPD_${timestamp}.docx`);
+            const zipPath = path.join(downloadsDir, `Politique_RGPD_${timestamp}.zip`);
+
+     // --- Texte ---
 	const titre = nomFichier;
     const introduction = `
 Le présent document est établi au nom de la ${entreprise} sus nommée ${sigle}.
@@ -200,15 +195,11 @@ Selon le droit applicable, vous disposez du droit de :
         "Formuler une réclamation auprès de la CNIL dont le site internet est accessible à l’adresse suivante www.cnil.fr et le siège est situé 3 Place de Fontenoy – TSA 80715 - 75334 Paris Cedex 07",
       ];
 
-
-		// ===== PDF =====
+           // PDF
 		await new Promise((resPdf, rejPdf) => {
 		const pdfDoc = new PDFDocument({ margin: 50 });
 		const stream = fs.createWriteStream(pdfPath);
 		pdfDoc.pipe(stream);
-
-		// Construire le chemin absolu vers le dossier fonts
-		const fontsDir = path.join("public", "fonts");
 
 		// Enregistrer les polices
 		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
@@ -239,7 +230,7 @@ Selon le droit applicable, vous disposez du droit de :
 			});
 
 		// Logo centré sous le titre
-		const logoPath = "public/images/logo_rgpd_trankility.png";
+		const logoPath = path.join(imagesDir, "logo_rgpd_trankility.png");
 		if (fs.existsSync(logoPath)) {
 			pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
 		} else {
@@ -324,9 +315,8 @@ Selon le droit applicable, vous disposez du droit de :
 		stream.on("error", rejPdf);
 		});
 
-
-      // ===== DOCX =====
-      const wordDoc = new Document({
+     // ===== DOCX =====
+      const doc = new Document({
         sections: [
 		    // --- PAGE DE GARDE ---
 		{
@@ -376,7 +366,7 @@ Selon le droit applicable, vous disposez du droit de :
 				new Paragraph({
 				children: [
 					new ImageRun({
-					data: fs.readFileSync("public/images/logo_rgpd_trankility.png"),
+					data: fs.readFileSync(path.join(imagesDir, "logo_rgpd_trankility.png")),
 					transformation: {
 						width: 200,
 						height: 200,
@@ -619,33 +609,26 @@ Selon le droit applicable, vous disposez du droit de :
           },
         ],
       });
+	        
+			// --- Génération DOCX ---
+            const buffer = await Packer.toBuffer(doc);
+            fs.writeFileSync(docxPath, buffer);
 
-      // --- Génération DOCX ---
-      const buffer = await Packer.toBuffer(wordDoc);
-      fs.writeFileSync(docxPath, buffer);
-      console.log(`DOCX créé: ${docxPath}`);
+			// --- Création ZIP ---
+            await new Promise((res, rej) => {
+                const output = fs.createWriteStream(zipPath);
+                const archive = archiver("zip");
+                archive.pipe(output);
+                archive.file(pdfPath, { name: path.basename(pdfPath) });
+                archive.file(docxPath, { name: path.basename(docxPath) });
+                archive.finalize();
+                output.on("close", () => res());
+                archive.on("error", err => rej(err));
+            });
 
-      // --- Création ZIP ---
-      await new Promise((resZip, rejZip) => {
-        const output = fs.createWriteStream(zipPath);
-        const archive = archiver("zip");
-
-        output.on("close", () => {
-          console.log(`ZIP créé: ${zipPath} (${archive.pointer()} octets)`);
-          resZip();
-        });
-        archive.on("error", (err) => rejZip(err));
-
-        archive.pipe(output);
-        archive.file(pdfPath, { name: `${baseName}.pdf` });
-        archive.file(docxPath, { name: `${baseName}.docx` });
-        archive.finalize();
-      });
-      resolve({ pdfPath, docxPath, zipPath});
-    } catch (err) {
-      console.error("Erreur generateDocuments:", err);
-      reject(err);
-    }
-  });
+            resolve({ pdfPath, docxPath, zipPath });
+        } catch(err) {
+            reject(err);
+        }
+    });
 }
-
