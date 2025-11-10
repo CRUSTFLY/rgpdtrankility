@@ -187,7 +187,7 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
     if(missing.length>0){ msgDiv.textContent="⚠️ Champs manquants: "+missing.join(","); return; }
 
     try{
-        const res = await fetch("api/generate", {
+        const res = await fetch("https://rgpdtrankility.vercel.app/generate", {
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body: JSON.stringify({formData, documentType: docType})
