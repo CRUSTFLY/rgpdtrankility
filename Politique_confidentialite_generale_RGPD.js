@@ -8,6 +8,15 @@ import archiver from "archiver";
 // ===== Variable pour le nom du fichier =====
 const nomFichier = "Politique de confidentialité générale RGPD"; // <-- change ici le nom du document
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Construire le chemin absolu vers le dossier fonts
+const fontsDir = path.join(__dirname, "public", "fonts");
+		
+// Construire le chemin absolu vers le dossier images
+const imagesDir = path.join(__dirname, "public", "images");
+
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege, downloadsDir) {
     return new Promise(async (resolve, reject) => {
         try {
@@ -191,15 +200,6 @@ Selon le droit applicable, vous disposez du droit de :
 		const pdfDoc = new PDFDocument({ margin: 50 });
 		const stream = fs.createWriteStream(pdfPath);
 		pdfDoc.pipe(stream);
-			
-		const __filename = fileURLToPath(import.meta.url);
-		const __dirname = path.dirname(__filename);
-
-		// Construire le chemin absolu vers le dossier fonts
-		const fontsDir = path.join(__dirname, "public", "fonts");
-		
-		// Construire le chemin absolu vers le dossier images
-		const imagesDir = path.join(__dirname, "public", "images");
 
 		// Enregistrer les polices
 		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
