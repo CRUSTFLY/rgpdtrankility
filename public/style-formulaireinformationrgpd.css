@@ -89,7 +89,7 @@ form#autoForm button {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    align-self: flex-start;
+    align-self: center;
 }
 
 form#autoForm button:hover {
@@ -110,4 +110,36 @@ form#autoForm button:hover {
         width: 100%;
         padding: 0;
     }
+}
+
+/* ===== POLICE ET TAILLE DES LEGEND ET TEXTE ===== */
+
+/* Legend (titres des fieldsets) */
+form#autoForm legend {
+    font-family: "Calibri", sans-serif;
+    font-weight: bold;           /* Calibri Bold */
+    font-size: 1.4rem;           /* taille légèrement plus grande */
+    color: #000;                  /* texte noir */
+    padding: 0;
+    margin-bottom: 0.5rem;
+}
+
+/* Texte des labels, inputs et paragraphes */
+form#autoForm label,
+form#autoForm input,
+form#autoForm textarea,
+form#autoForm p {
+    font-family: "Calibri", sans-serif;
+    font-weight: 300;             /* Calibri Light */
+    font-size: 1rem;              /* taille standard */
+    color: #000;                  /* noir */
+}
+
+/* Placeholder des inputs */
+form#autoForm input::placeholder,
+form#autoForm textarea::placeholder {
+    color: #555;                  /* gris moyen pour placeholder */
+    font-size: 0.95rem;
+    font-style: italic;
+    font-weight: 300;             /* Calibri Light */
 }
