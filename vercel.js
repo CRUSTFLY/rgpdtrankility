@@ -7,13 +7,6 @@
     }
   ],
   "routes": [
-    {
-      "src": "/generate",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
+    { "src": "/(.*)", "dest": "/server.js" }
   ]
 }
