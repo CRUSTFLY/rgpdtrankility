@@ -8,11 +8,11 @@
 </head>
 <body>
     <header>
-	  <div class="logo">
-		<a href="index.html">
-          <img src="images/logo_rgpd_trankility.png" alt="Logo RGPD Trankility">
-		</a>
-	  </div>
+        <div class="logo">
+            <a href="index.html">
+                <img src="images/logo_rgpd_trankility.png" alt="Logo RGPD Trankility">
+            </a>
+        </div>
         <nav>
             <a href="login.html">Connexion</a>
             <a href="register.html">S'inscrire</a>
@@ -20,10 +20,53 @@
     </header>
 
     <main>
+        <!-- Section principale -->
         <section class="hero">
             <h2>Protégez facilement les données de vos utilisateurs</h2>
             <p>RGPD Trankility vous aide à gérer la conformité RGPD de votre site ou application rapidement et efficacement.</p>
-            <a href="register.html" class="btn">Commencer maintenant</a>
+            <a id="startBtn" href="#" class="btn">Commencer maintenant</a>
+        </section>
+
+        <!-- Nouvelle section : Offres / Tarifs -->
+        <section class="pricing">
+            <h2>Nos Offres</h2>
+            <div class="pricing-container">
+                <!-- Offre 1 -->
+                <div class="pricing-card">
+                    <h4>Basique</h4>
+                    <ul>
+                        <li>Suivi du consentement</li>
+                        <li>Tableau de bord simplifié</li>
+                        <li>1 site inclus</li>
+                    </ul>
+                    <p class="price">19,99 €/mois</p>
+                    <a href="#" class="btn">Payer</a>
+                </div>
+
+                <!-- Offre 2 -->
+                <div class="pricing-card">
+                    <h4>Essentiel</h4>
+                    <ul>
+                        <li>Tout du plan Essentiel</li>
+                        <li>Rapports automatisés</li>
+                        <li>Jusqu’à 5 sites</li>
+                    </ul>
+                    <p class="price">39,99 €/mois</p>
+                    <a href="#" class="btn">Payer</a>
+                </div>
+
+                <!-- Offre 3 -->
+                <div class="pricing-card">
+                    <h4>Pro</h4>
+                    <ul>
+                        <li>Tout du plan Pro</li>
+                        <li>Support prioritaire</li>
+                        <li>Nombre illimité de sites</li>
+                    </ul>
+                    <p class="price">69,99 €/mois</p>
+                    <a href="#" class="btn">Payer</a>
+                </div>
+            </div>
         </section>
 
         <section class="features">
@@ -40,6 +83,33 @@
     <footer>
         <p>&copy; 2025 RGPD Trankility. Tous droits réservés.</p>
     </footer>
-	<script src="header.js"></script>
+
+    <script src="header.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+	const startBtn = document.getElementById('startBtn');
+	if (!startBtn) {
+		console.error('startBtn introuvable');
+		return;
+	}
+
+	// Nom de la clé localStorage à vérifier — adapte si nécessaire
+	const storageKey = 'isLoggedIn';
+	
+	// optionnel : définir par défaut l'href visible (ne suffit pas toujours)
+	startBtn.setAttribute('href', localStorage.getItem(storageKey) === 'true' ? 'account.html' : 'register.html');
+
+	// Ecouteur de clic robuste : force la redirection même si un autre script a preventDefault()
+	startBtn.addEventListener('click', function (e) {
+	e.preventDefault(); // on empêche le comportement par défaut pour contrôler la nav
+    const isLoggedIn = localStorage.getItem(storageKey) === 'true';
+    const target = isLoggedIn ? 'account.html' : 'register.html';
+    console.log(`Bouton "Commencer maintenant" cliqué — isLoggedIn=${isLoggedIn} -> ${target}`);
+    // utilisation de assign pour une redirection standard
+    window.location.assign(target);
+	}, { passive: false, capture: false });
+});
+</script>
+
 </body>
 </html>

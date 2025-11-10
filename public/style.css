@@ -324,3 +324,57 @@ footer {
     .progress div.active {
       background: #ebc015;
     }
+	
+/* ===== PAGE D'ACCUEIL (TARIFS) ===== */
+	
+.pricing {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+}
+
+.pricing-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.pricing-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+    width: 400px;
+}
+
+.pricing-card h4 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.pricing-card ul {
+    list-style-type: disc;
+    text-align: left;
+    margin: 0 0 20px 20px;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #000000;
+    color: #ebc015;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #005fa3;
+}
