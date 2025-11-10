@@ -145,7 +145,7 @@ nav a:hover {
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     padding: 40px 25px;
-    width: 400px;
+    width: 380px;
     transition: transform 0.3s ease;
 }
 
