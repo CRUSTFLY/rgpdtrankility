@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mon Compte - RGPD Trankility</title>
 <link rel="stylesheet" href="style-account.css">
-<style>
-
-</style>
 </head>
 <body>
 <header>
@@ -35,53 +32,23 @@
         <section id="monCompte" class="active">
             <h2 id="welcomeMsg">Bienvenue sur votre compte</h2>
             <p>Gérez vos paramètres RGPD et consultez l’historique des consentements ici.</p>
-            <a href="generateurdocuments.html" class="btn-gendoc">Accéder au Générateur de Documents</a>
         </section>
 
         <!-- Formulaire RGPD -->
         <section id="FormulaireRGPD">
             <h2>Formulaire RGPD</h2>
-            <div id="formulaireContainer">
-		<script>
-		fetch('formulaireinformationrgpd.html')
-		.then(response => response.text())
-		.then(html => {
-			document.getElementById('formulaireContainer').innerHTML = html;
-
-		// --- Ensuite tu peux ré-attacher le JS auto-save ---
-		const form = document.getElementById('autoForm');
-		if(form){
-			const savedData = JSON.parse(localStorage.getItem("autoFormData")) || {};
-		for (const [key, value] of Object.entries(savedData)) {
-			const input = document.getElementById(key);
-		if (input) input.value = value;
-		}
-
-		form.querySelectorAll("input").forEach(input => {
-			input.addEventListener("input", () => {
-			const data = JSON.parse(localStorage.getItem("autoFormData")) || {};
-			data[input.id] = input.value;
-			localStorage.setItem("autoFormData", JSON.stringify(data));
-			});
-		});
-
-		form.addEventListener("submit", e => {
-			e.preventDefault();
-			alert("Formulaire soumis ! Les données sont sauvegardées automatiquement.");
-			console.log(JSON.parse(localStorage.getItem("autoFormData")));
-		});
-		}
-		});
-		</script>
-		</div>
+            <div id="formulaireContainer"></div>
         </section>
 
         <!-- Regénérer un document -->
         <section id="RegenererUnDocument">
             <h2>Regénérer un document</h2>
-            <div id="regenerationContainer">
-                <p>Aucun document à regénérer pour le moment.</p>
-            </div>
+            <select id="docSelect">
+                <option value="">-- Choisissez un document --</option>
+                <option value="Politique de confidentialité RGPD">Politique de confidentialité RGPD</option>
+            </select>
+            <button id="generateBtn">Générer</button>
+            <div id="regenResult"></div>
         </section>
 
         <!-- Historique -->
@@ -116,77 +83,167 @@
 </footer>
 
 <script>
-    // Gestion utilisateur
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if(currentUser) {
-        document.getElementById('welcomeMsg').textContent = `Bienvenue, ${currentUser.name} !`;
-    } else {
-        window.location.href = 'login.html';
+/* ---------------- Gestion utilisateur ---------------- */
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+if(currentUser){
+    document.getElementById('welcomeMsg').textContent = `Bienvenue, ${currentUser.name} !`;
+} else {
+    window.location.href = 'login.html';
+}
+
+/* ---------------- Gestion onglets ---------------- */
+const tabs = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('.content section');
+
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const targetId = tab.dataset.tab;
+
+        tabs.forEach(t => t.classList.toggle('active', t === tab));
+        sections.forEach(s => s.classList.toggle('active', s.id === targetId));
+
+        if(targetId === 'historiqueGeneration') showHistory();
+        if(targetId === 'FormulaireRGPD') initFormulaireRGPD();
+        if(targetId === 'RegenererUnDocument') initRegeneration();
+    });
+});
+
+/* ---------------- Historique ---------------- */
+function showHistory() {
+    if(!currentUser) return;
+    const historyKey = `history_${currentUser.name}`;
+    let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+    const historyDiv = document.getElementById('historyList');
+
+    if(history.length === 0){
+        historyDiv.innerHTML = "<p>Aucun document généré pour le moment.</p>";
+        return;
     }
 
-    // Gestion des onglets
-    const tabs = document.querySelectorAll('.tab-btn');
-    const sections = document.querySelectorAll('.content section');
+    historyDiv.innerHTML = '';
+    history.slice().reverse().forEach((entry, index) => {
+        const div = document.createElement('div');
+        div.classList.add('history-item');
 
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const targetId = tab.dataset.tab;
+        const infoDiv = document.createElement('div');
+        infoDiv.innerHTML = `
+            <strong>Généré le :</strong> ${entry.date}<br>
+            <a href="${entry.pdfUrl}" download><button class="pdf">PDF</button></a>
+            <a href="${entry.docxUrl}" download><button class="word">Word</button></a>
+            <a href="${entry.zipUrl}" download><button class="zip">ZIP</button></a>
+        `;
 
-            // Activer le bouton cliqué
-            tabs.forEach(t => t.classList.toggle('active', t === tab));
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = "❌";
+        deleteBtn.classList.add('deleteBtn');
+        deleteBtn.title = "Supprimer cet élément";
+        deleteBtn.addEventListener('click', () => {
+            const realIndex = history.length - 1 - index;
+            history.splice(realIndex, 1);
+            localStorage.setItem(historyKey, JSON.stringify(history));
+            showHistory();
+        });
 
-            // Afficher la section correspondante et cacher les autres
-            sections.forEach(s => s.classList.toggle('active', s.id === targetId));
+        div.appendChild(infoDiv);
+        div.appendChild(deleteBtn);
+        historyDiv.appendChild(div);
+    });
+}
 
-            // Fonctionnalités spécifiques par onglet
-            if(targetId === 'historiqueGeneration') showHistory();
-            if(targetId === 'FormulaireRGPD') initFormulaireRGPD?.();
-            if(targetId === 'RegenererUnDocument') initRegeneration?.();
+/* ---------------- Formulaire RGPD ---------------- */
+let formulaireLoaded = false;
+function initFormulaireRGPD() {
+    const container = document.getElementById('formulaireContainer');
+    if(formulaireLoaded) return;
+    formulaireLoaded = true;
+
+    fetch("formulaireinformationrgpd.html")
+    .then(res => res.text())
+    .then(html => {
+        container.innerHTML = html;
+
+        const form = container.querySelector("#autoForm");
+        const savedData = JSON.parse(localStorage.getItem("autoFormData")) || {};
+        Object.entries(savedData).forEach(([key,val]) => {
+            const input = form.querySelector("#"+key);
+            if(input) input.value = val;
+        });
+
+        form.querySelectorAll("input").forEach(input => {
+            input.addEventListener("input", () => {
+                const data = JSON.parse(localStorage.getItem("autoFormData")) || {};
+                data[input.id] = input.value;
+                localStorage.setItem("autoFormData", JSON.stringify(data));
+            });
+        });
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            alert("Formulaire sauvegardé !");
         });
     });
+}
 
-    // Historique de génération
-    function showHistory() {
-        if(!currentUser) return;
-        const historyKey = `history_${currentUser.name}`;
-        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-        const historyDiv = document.getElementById('historyList');
+/* ---------------- Génération de document ---------------- */
+function initRegeneration() {
+    const generateBtn = document.getElementById("generateBtn");
+    const resultDiv = document.getElementById("regenResult");
 
-        if(history.length === 0) {
-            historyDiv.innerHTML = "<p>Aucun document généré pour le moment.</p>";
-            return;
-        }
+    generateBtn.addEventListener("click", async () => {
+        initFormulaireRGPD(); // s'assurer que le formulaire est chargé
 
-        historyDiv.innerHTML = '';
-        history.slice().reverse().forEach((entry, index) => {
-            const div = document.createElement('div');
-            div.classList.add('history-item');
+        const docType = document.getElementById("docSelect").value;
+        if(!docType) return resultDiv.textContent = "⚠️ Choisissez un document.";
 
-            const infoDiv = document.createElement('div');
-            infoDiv.innerHTML = `
-                <strong>Généré le :</strong> ${entry.date}<br>
-                <a href="${entry.pdfUrl}" download><button class="pdf">PDF</button></a>
-                <a href="${entry.docxUrl}" download><button class="word">Word</button></a>
-                <a href="${entry.zipUrl}" download><button class="zip">ZIP</button></a>
-            `;
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = "❌";
-            deleteBtn.classList.add('deleteBtn');
-            deleteBtn.title = "Supprimer cet élément";
-
-            deleteBtn.addEventListener('click', () => {
-                const realIndex = history.length - 1 - index;
-                history.splice(realIndex, 1);
-                localStorage.setItem(historyKey, JSON.stringify(history));
-                showHistory();
-            });
-
-            div.appendChild(infoDiv);
-            div.appendChild(deleteBtn);
-            historyDiv.appendChild(div);
+        let formData = JSON.parse(localStorage.getItem("autoFormData")) || {};
+        const requiredFields = ["nom","prenom","entreprise","sigle","adressesiege","cpsiege","villesiege","numtelsiege"];
+        requiredFields.forEach(f => {
+            const input = document.getElementById(f);
+            if(input && (!formData[f] || formData[f].trim()==="")) formData[f] = input.value.trim();
         });
-    }
+
+        const missing = requiredFields.filter(f => !formData[f] || formData[f]==="");
+        if(missing.length) return resultDiv.textContent = "⚠️ Champs manquants: " + missing.join(", ");
+
+        resultDiv.textContent = "⏳ Génération en cours...";
+
+        try {
+            const res = await fetch("/generate", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({formData, documentType: docType})
+            });
+            const data = await res.json();
+            if(res.ok){
+                resultDiv.innerHTML = `
+                    ✅ Document généré !<br>
+                    <a href="${data.pdfUrl}" download class="download-btn">PDF</a>
+                    <a href="${data.docxUrl}" download class="download-btn">Word</a>
+                    <a href="${data.zipUrl}" download class="download-btn">ZIP</a>
+                `;
+
+                // Sauvegarde dans l'historique
+                if(currentUser){
+                    const historyKey = `history_${currentUser.name}`;
+                    let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                    history.push({
+                        date: new Date().toLocaleString(),
+                        docType,
+                        pdfUrl: data.pdfUrl,
+                        docxUrl: data.docxUrl,
+                        zipUrl: data.zipUrl
+                    });
+                    localStorage.setItem(historyKey, JSON.stringify(history));
+                }
+
+            } else resultDiv.textContent = "❌ "+data.error;
+        } catch(err){ resultDiv.textContent="❌ Erreur réseau ou serveur"; console.error(err); }
+    });
+}
+
+/* ---------------- Charger formulaire si onglet actif au chargement ---------------- */
+if(document.querySelector(".tab-btn.active").dataset.tab === "FormulaireRGPD") initFormulaireRGPD();
+
 </script>
 <script src="header.js"></script>
 </body>

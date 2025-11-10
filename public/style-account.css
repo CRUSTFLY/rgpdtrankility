@@ -13,7 +13,7 @@ body {
     line-height: 1.6;
 }
 
-/* ===== HEADER ===== (inchangé) */
+/* ===== HEADER ===== */
 header {
     display: flex;
     justify-content: space-between;
@@ -500,6 +500,30 @@ footer {
     transform: translateY(-2px);
 }
 
+/* ===== DOWNLOAD BUTTONS ===== */
+.download-btn {
+    background-color: #000;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border: 2px solid #000;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    min-width: 100px;
+    margin: 0.5rem; /* espace entre les boutons */
+	text-decoration: none;
+}
+
+.download-btn:hover {
+    background-color: #222;
+    color: #ebc015;
+    border-color: #ebc015;
+    text-decoration: none; /* enlève le soulignement au hover */
+}
+
 /* ===== TEXTAREAS ===== */
 #contactForm textarea,
 #formulaireContainer textarea {
@@ -548,3 +572,97 @@ footer {
     border-color: #ebc015;     /* bordure dorée au hover */
     transform: translateY(-2px); /* léger effet de "soulèvement" */
 }
+
+/* ===== REGENERER UN DOCUMENT ===== */
+
+#RegenererUnDocument {
+  padding: 2rem;
+  background: #fffbea;
+  border-top: 2px solid #e5d87f;
+  border-bottom: 2px solid #e5d87f;
+  border-radius: 0;
+  color: #000;
+  font-family: "Calibri Light", sans-serif;
+}
+
+#RegenererUnDocument h2 {
+  font-family: "Calibri Bold", sans-serif;
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #000;
+}
+
+/* Conteneur principal */
+.regen-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Labels */
+#RegenererUnDocument label {
+  display: block;
+  font-family: "Calibri Light", sans-serif;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* Inputs & boutons */
+#RegenererUnDocument select,
+#RegenererUnDocument button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  font-family: "Calibri Light", sans-serif;
+}
+
+#RegenererUnDocument button {
+  background: #000;
+  color: #f4d03f;
+  font-family: "Calibri Bold", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid #000;
+}
+
+#RegenererUnDocument button:hover {
+  background: #f4d03f;
+  color: #000;
+}
+
+/* Résultat */
+#RegenererUnDocument .result {
+  text-align: center;
+  font-family: "Calibri Light", sans-serif;
+  margin-top: 20px;
+}
+
+#RegenererUnDocument .result a button {
+  margin-top: 10px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  #RegenererUnDocument {
+    padding: 1.5rem;
+  }
+
+  #RegenererUnDocument h2 {
+    font-size: 1.4rem;
+  }
+
+  #RegenererUnDocument label,
+  #RegenererUnDocument select,
+  #RegenererUnDocument button {
+    font-size: 0.95rem;
+  }
+}
+

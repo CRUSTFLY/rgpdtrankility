@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -8,52 +9,48 @@
 <body>
 
 <form id="autoForm">
+    <fieldset>
+        <legend>Informations personnelles</legend>
+        <input type="text" id="nom" placeholder="Nom" required>
+        <input type="text" id="prenom" placeholder="Prénom" required>
+    </fieldset>
 
-  <!-- Étape 1 : Informations dirigeant -->
-  <fieldset>
-    <legend>Informations personnelles</legend>
-    <input type="text" id="nom" placeholder="Nom" required>
-    <input type="text" id="prenom" placeholder="Prénom" required>
-  </fieldset>
-
-  <!-- Étape 2 : Informations société -->
-  <fieldset>
-    <legend>Informations de la société</legend>
-    <input type="text" id="entreprise" placeholder="Nom de société" required>
-    <input type="text" id="sigle" placeholder="Sigle de la société">
-    <input type="text" id="adressesiege" placeholder="Adresse du siège" required>
-    <input type="text" id="cpsiege" placeholder="Code Postal" required>
-    <input type="text" id="villesiege" placeholder="Ville" required>
-    <input type="text" id="numtelsiege" placeholder="Numéro de téléphone" required>
-  </fieldset>
-
-  <button type="submit">Valider</button>
+    <fieldset>
+        <legend>Informations société</legend>
+        <input type="text" id="entreprise" placeholder="Nom de société" required>
+        <input type="text" id="sigle" placeholder="Sigle">
+        <input type="text" id="adressesiege" placeholder="Adresse du siège" required>
+        <input type="text" id="cpsiege" placeholder="Code Postal" required>
+        <input type="text" id="villesiege" placeholder="Ville" required>
+        <input type="text" id="numtelsiege" placeholder="Numéro de téléphone" required>
+    </fieldset>
 </form>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  // Charger les données depuis localStorage
-  const savedData = JSON.parse(localStorage.getItem("autoFormData")) || {};
-  for (const [key, value] of Object.entries(savedData)) {
-    const input = document.getElementById(key);
-    if (input) input.value = value;
-  }
+    const form = document.getElementById("autoForm");
 
-  // Sauvegarde automatique à chaque saisie
-  document.querySelectorAll("#autoForm input").forEach(input => {
-    input.addEventListener("input", () => {
-      const data = JSON.parse(localStorage.getItem("autoFormData")) || {};
-      data[input.id] = input.value;
-      localStorage.setItem("autoFormData", JSON.stringify(data));
+    // Remplir les champs depuis localStorage
+    const savedData = JSON.parse(localStorage.getItem("autoFormData")) || {};
+    Object.entries(savedData).forEach(([key, val]) => {
+        const input = document.getElementById(key);
+        if(input) input.value = val;
     });
-  });
 
-  // Soumission finale
-  document.getElementById("autoForm").addEventListener("submit", e => {
-    e.preventDefault();
-    alert("Formulaire soumis ! Les données sont sauvegardées automatiquement.");
-    console.log(JSON.parse(localStorage.getItem("autoFormData")));
-  });
+    // Sauvegarde automatique
+    form.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", () => {
+            const data = JSON.parse(localStorage.getItem("autoFormData")) || {};
+            data[input.id] = input.value;
+            localStorage.setItem("autoFormData", JSON.stringify(data));
+        });
+    });
+
+    // Soumission sans vider le formulaire
+    form.addEventListener("submit", e => {
+        e.preventDefault();
+        alert("Formulaire sauvegardé !");
+    });
 });
 </script>
 
