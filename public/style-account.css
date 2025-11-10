@@ -357,3 +357,139 @@ footer {
         gap: 20px;
     }
 }
+
+/* ===== FORMULAIRES DE CONTACT & RGPD ===== */
+#contactSupport, 
+#FormulaireRGPD {
+    width: 90%;
+    max-width: 1000px;
+    margin: 3rem auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    padding: 3rem 2rem;
+    color: #000;
+}
+
+#contactSupport h2,
+#FormulaireRGPD h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: #000;
+}
+
+/* ===== FORMULAIRE ===== */
+#contactForm,
+#formulaireContainer form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+#contactForm label,
+#formulaireContainer label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #000;
+}
+
+#contactForm input,
+#formulaireContainer input,
+#contactForm textarea,
+#formulaireContainer textarea,
+#formulaireContainer select {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+#contactForm input:focus,
+#formulaireContainer input:focus,
+#contactForm textarea:focus,
+#formulaireContainer textarea:focus,
+#formulaireContainer select:focus {
+    outline: none;
+    border-color: #ebc015;
+    box-shadow: 0 0 6px #ebc015;
+}
+
+/* ===== BOUTONS ===== */
+#contactForm button,
+#formulaireContainer button {
+    background-color: #000;
+    color: #fff;
+    padding: 1rem 2rem;
+    border: 2px solid #000;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+    min-width: 200px;
+}
+
+#contactForm button:hover,
+#formulaireContainer button:hover {
+    background-color: #222;
+    border-color: #ebc015;
+    color: #ebc015;
+    transform: translateY(-2px);
+}
+
+/* ===== TEXTAREAS ===== */
+#contactForm textarea,
+#formulaireContainer textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+/* ===== PETITE MISE EN PAGE ===== */
+#contactSupport p,
+#FormulaireRGPD p {
+    text-align: center;
+    color: #333;
+    margin-top: 1.5rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    #contactSupport,
+    #FormulaireRGPD {
+        width: 95%;
+        padding: 2rem 1.5rem;
+    }
+
+    #contactForm,
+    #formulaireContainer form {
+        width: 100%;
+    }
+}
+
+/* ===== BOUTON GENERATEUR DE DOCUMENTS ===== */
+.btn-gendoc {
+    display: inline-block;
+    background-color: #000000; /* fond noir */
+    color: #ebc015;            /* texte doré */
+    padding: 1rem 2.5rem;      /* taille du bouton */
+    border-radius: 10px;       /* coins arrondis */
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid #000000; /* bordure noire */
+    transition: all 0.3s ease;
+}
+
+.btn-gendoc:hover {
+    background-color: #222222; /* fond un peu plus clair */
+    color: #ebc015;            /* texte doré */
+    border-color: #ebc015;     /* bordure dorée au hover */
+    transform: translateY(-2px); /* léger effet de "soulèvement" */
+}

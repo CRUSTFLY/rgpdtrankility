@@ -35,15 +35,50 @@
         <section id="monCompte" class="active">
             <h2 id="welcomeMsg">Bienvenue sur votre compte</h2>
             <p>Gérez vos paramètres RGPD et consultez l’historique des consentements ici.</p>
-            <a href="generateurdocuments.html" class="btn">Accéder au Générateur de Documents</a>
+            <a href="generateurdocuments.html" class="btn-gendoc">Accéder au Générateur de Documents</a>
         </section>
 
         <!-- Formulaire RGPD -->
         <section id="FormulaireRGPD">
             <h2>Formulaire RGPD</h2>
             <div id="formulaireContainer">
-                <iframe src="formulaireinformationrgpd.html"></iframe>
-            </div>
+        <section id="FormulaireRGPD">
+			<h2>Formulaire RGPD</h2>
+			<div id="formulaireContainer"></div>
+		</section>
+
+		<script>
+		fetch('formulaireinformationrgpd.html')
+		.then(response => response.text())
+		.then(html => {
+			document.getElementById('formulaireContainer').innerHTML = html;
+
+		// --- Ensuite tu peux ré-attacher le JS auto-save ---
+		const form = document.getElementById('autoForm');
+		if(form){
+			const savedData = JSON.parse(localStorage.getItem("autoFormData")) || {};
+		for (const [key, value] of Object.entries(savedData)) {
+			const input = document.getElementById(key);
+		if (input) input.value = value;
+		}
+
+		form.querySelectorAll("input").forEach(input => {
+			input.addEventListener("input", () => {
+			const data = JSON.parse(localStorage.getItem("autoFormData")) || {};
+			data[input.id] = input.value;
+			localStorage.setItem("autoFormData", JSON.stringify(data));
+			});
+		});
+
+		form.addEventListener("submit", e => {
+			e.preventDefault();
+			alert("Formulaire soumis ! Les données sont sauvegardées automatiquement.");
+			console.log(JSON.parse(localStorage.getItem("autoFormData")));
+		});
+		}
+		});
+		</script>
+		</div>
         </section>
 
         <!-- Regénérer un document -->
