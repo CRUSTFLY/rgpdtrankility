@@ -144,44 +144,58 @@ form#autoForm textarea::placeholder {
     font-weight: 300;             /* Calibri Light */
 }
 
-/* ===== RESPONSIVE FORMULAIRE RGPD ===== */
+/* ===== RESPONSIVE - FORMULAIRE RGPD ===== */
+
+/* Tablettes */
 @media (max-width: 1024px) {
-    /* Formulaire principal */
     form#autoForm {
-        width: 95%;           /* occupe presque toute la largeur */
-        padding: 1.5rem;      /* moins de padding pour petits écrans */
-        gap: 1rem;            /* réduit l’espace entre sections */
-    }
-
-    /* Legend (titres des fieldsets) */
-    form#autoForm legend {
-        font-size: 1.3rem;    /* légèrement plus petit */
-    }
-
-    /* Inputs et textarea */
-    form#autoForm input,
-    form#autoForm textarea {
-        padding: 0.8rem;      /* un peu plus compact */
-        font-size: 0.95rem;
-    }
-
-    /* Bouton */
-    form#autoForm button {
-        padding: 0.9rem 1.5rem;
-        font-size: 1rem;
-        align-self: center;   /* centré sur petits écrans */
-    }
-}
-
-@media (max-width: 768px) {
-    form#autoForm {
-        width: 100%;          /* utilise toute la largeur disponible */
-        padding: 1rem;
+        width: 95%;
+        padding: 1.2rem;
         gap: 0.8rem;
     }
 
     form#autoForm legend {
-        font-size: 1.2rem;
+        font-size: 1.2rem; /* réduit */
+    }
+
+    form#autoForm fieldset {
+        padding: 1rem;
+    }
+
+    form#autoForm input,
+    form#autoForm textarea {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    form#autoForm button {
+        padding: 0.9rem 1.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* Smartphones */
+@media (max-width: 768px) {
+    #FormulaireRGPD h2 {
+        font-size: 1.5rem; /* titre global réduit */
+        margin-bottom: 1.2rem;
+    }
+
+    form#autoForm {
+        width: 100%;
+        padding: 1rem;
+        gap: 0.7rem;
+    }
+
+    form#autoForm fieldset {
+        padding: 0.9rem;
+        border-width: 1.5px; /* bordure plus fine */
+        background-color: #fff9da; /* un peu plus doux */
+    }
+
+    form#autoForm legend {
+        font-size: 1.1rem;
+        font-weight: bold;
     }
 
     form#autoForm input,
@@ -191,14 +205,26 @@ form#autoForm textarea::placeholder {
     }
 
     form#autoForm button {
-        width: 100%;          /* bouton prend toute la largeur */
-        padding: 1rem;
+        width: 100%;
+        padding: 0.9rem;
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
     }
 }
 
+/* Petits téléphones */
 @media (max-width: 480px) {
+    #FormulaireRGPD h2 {
+        font-size: 1.3rem;
+    }
+
     form#autoForm legend {
-        font-size: 1.1rem;
+        font-size: 1rem; /* taille plus compacte */
+        margin-bottom: 0.3rem;
+    }
+
+    form#autoForm fieldset {
+        padding: 0.7rem;
     }
 
     form#autoForm input,
@@ -208,7 +234,7 @@ form#autoForm textarea::placeholder {
     }
 
     form#autoForm button {
-        font-size: 0.95rem;
-        padding: 0.9rem;
+        font-size: 0.9rem;
+        padding: 0.8rem;
     }
 }
