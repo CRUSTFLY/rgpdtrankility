@@ -1,4 +1,9 @@
 
+
+import express from "express";
+import cors from "cors";
+
+=======
 import express from "express";
 import cors from "cors";
 
@@ -26,6 +31,8 @@ app.use(express.json());
 
 // POST pour générer un document
 
+
+
 app.post("/generate", async (req, res) => {
     try {
         const { formData, documentType } = req.body;
@@ -39,6 +46,7 @@ app.post("/generate", async (req, res) => {
         const { pdfBase64, docxBase64, zipBase64 } = await generateDocuments(formData, documentType);
 
         res.json({ pdfBase64, docxBase64, zipBase64 });
+
 
 
         // Vérifier que tous les champs sont présents
@@ -70,6 +78,7 @@ app.post("/generate", async (req, res) => {
                 zip: "Politique_de_confidentialite_RGPD.zip"
             }
         });
+
 
     } catch(err) {
         console.error("Erreur serveur :", err);
@@ -131,6 +140,7 @@ app.post("/generate", async (req, res) => {
         console.error("Erreur serveur:", err);
         res.status(500).json({ error: err.message });
     }
+
 
 });
 
