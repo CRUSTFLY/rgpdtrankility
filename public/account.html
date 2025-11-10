@@ -17,7 +17,6 @@
 </header>
 
 <main>
-    <!-- Menu gauche -->
     <div class="menu">
         <button class="tab-btn active" data-tab="monCompte">Mon Compte</button>
         <button class="tab-btn" data-tab="FormulaireRGPD">Formulaire RGPD</button>
@@ -26,12 +25,12 @@
         <button class="tab-btn" data-tab="contactSupport">Contact & Support</button>
     </div>
 
-    <!-- Contenu à droite -->
     <div class="content">
         <!-- Mon Compte -->
         <section id="monCompte" class="active">
             <h2 id="welcomeMsg">Bienvenue sur votre compte</h2>
             <p>Gérez vos paramètres RGPD et consultez l’historique des consentements ici.</p>
+            <a href="generateurdocuments.html" class="btn-gendoc">Accéder au Générateur de Documents</a>
         </section>
 
         <!-- Formulaire RGPD -->
@@ -54,9 +53,7 @@
         <!-- Historique -->
         <section id="historiqueGeneration">
             <h2>Historique de génération</h2>
-            <div id="historyList">
-                <p>Aucun document généré pour le moment.</p>
-            </div>
+            <div id="historyList"><p>Aucun document généré pour le moment.</p></div>
         </section>
 
         <!-- Contact & Support -->
@@ -83,32 +80,29 @@
 </footer>
 
 <script>
-/* ---------------- Gestion utilisateur ---------------- */
+/* --- Gestion utilisateur et onglets --- */
 const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-if(currentUser){
+if(currentUser) {
     document.getElementById('welcomeMsg').textContent = `Bienvenue, ${currentUser.name} !`;
 } else {
     window.location.href = 'login.html';
 }
 
-/* ---------------- Gestion onglets ---------------- */
 const tabs = document.querySelectorAll('.tab-btn');
 const sections = document.querySelectorAll('.content section');
 
 tabs.forEach(tab => {
     tab.addEventListener('click', () => {
         const targetId = tab.dataset.tab;
-
         tabs.forEach(t => t.classList.toggle('active', t === tab));
         sections.forEach(s => s.classList.toggle('active', s.id === targetId));
 
         if(targetId === 'historiqueGeneration') showHistory();
-        if(targetId === 'FormulaireRGPD') initFormulaireRGPD();
-        if(targetId === 'RegenererUnDocument') initRegeneration();
+        if(targetId === 'FormulaireRGPD') loadFormulaire();
     });
 });
 
-/* ---------------- Historique ---------------- */
+/* --- Historique --- */
 function showHistory() {
     if(!currentUser) return;
     const historyKey = `history_${currentUser.name}`;
@@ -125,8 +119,7 @@ function showHistory() {
         const div = document.createElement('div');
         div.classList.add('history-item');
 
-        const infoDiv = document.createElement('div');
-        infoDiv.innerHTML = `
+        div.innerHTML = `
             <strong>Généré le :</strong> ${entry.date}<br>
             <a href="${entry.pdfUrl}" download><button class="pdf">PDF</button></a>
             <a href="${entry.docxUrl}" download><button class="word">Word</button></a>
@@ -137,6 +130,7 @@ function showHistory() {
         deleteBtn.textContent = "❌";
         deleteBtn.classList.add('deleteBtn');
         deleteBtn.title = "Supprimer cet élément";
+
         deleteBtn.addEventListener('click', () => {
             const realIndex = history.length - 1 - index;
             history.splice(realIndex, 1);
@@ -144,31 +138,27 @@ function showHistory() {
             showHistory();
         });
 
-        div.appendChild(infoDiv);
         div.appendChild(deleteBtn);
         historyDiv.appendChild(div);
     });
 }
 
-/* ---------------- Formulaire RGPD ---------------- */
+/* --- Formulaire RGPD --- */
 let formulaireLoaded = false;
-function initFormulaireRGPD() {
-    const container = document.getElementById('formulaireContainer');
+async function loadFormulaire() {
     if(formulaireLoaded) return;
     formulaireLoaded = true;
+    const res = await fetch("formulaireinformationrgpd.html");
+    const html = await res.text();
+    document.getElementById("formulaireContainer").innerHTML = html;
 
-    fetch("formulaireinformationrgpd.html")
-    .then(res => res.text())
-    .then(html => {
-        container.innerHTML = html;
-
-        const form = container.querySelector("#autoForm");
+    const form = document.getElementById("autoForm");
+    if(form){
         const savedData = JSON.parse(localStorage.getItem("autoFormData")) || {};
-        Object.entries(savedData).forEach(([key,val]) => {
-            const input = form.querySelector("#"+key);
+        Object.entries(savedData).forEach(([key,val])=>{
+            const input = document.getElementById(key);
             if(input) input.value = val;
         });
-
         form.querySelectorAll("input").forEach(input => {
             input.addEventListener("input", () => {
                 const data = JSON.parse(localStorage.getItem("autoFormData")) || {};
@@ -176,74 +166,72 @@ function initFormulaireRGPD() {
                 localStorage.setItem("autoFormData", JSON.stringify(data));
             });
         });
-
         form.addEventListener("submit", e => {
             e.preventDefault();
             alert("Formulaire sauvegardé !");
         });
-    });
+    }
 }
 
-/* ---------------- Génération de document ---------------- */
-function initRegeneration() {
-    const generateBtn = document.getElementById("generateBtn");
-    const resultDiv = document.getElementById("regenResult");
+/* --- Génération documents Vercel --- */
+document.getElementById("generateBtn").addEventListener("click", async () => {
+    const docType = document.getElementById("docSelect").value;
+    const msgDiv = document.getElementById("regenResult");
+    msgDiv.textContent = "⏳ Génération en cours...";
 
-    generateBtn.addEventListener("click", async () => {
-        initFormulaireRGPD(); // s'assurer que le formulaire est chargé
+    if(!docType){ msgDiv.textContent="⚠️ Choisissez un document."; return; }
 
-        const docType = document.getElementById("docSelect").value;
-        if(!docType) return resultDiv.textContent = "⚠️ Choisissez un document.";
+    let formData = JSON.parse(localStorage.getItem("autoFormData")) || {};
+    const requiredFields = ["nom","prenom","entreprise","sigle","adressesiege","cpsiege","villesiege","numtelsiege"];
+    const missing = requiredFields.filter(f => !formData[f] || formData[f].trim()==="");
+    if(missing.length>0){ msgDiv.textContent="⚠️ Champs manquants: "+missing.join(","); return; }
 
-        let formData = JSON.parse(localStorage.getItem("autoFormData")) || {};
-        const requiredFields = ["nom","prenom","entreprise","sigle","adressesiege","cpsiege","villesiege","numtelsiege"];
-        requiredFields.forEach(f => {
-            const input = document.getElementById(f);
-            if(input && (!formData[f] || formData[f].trim()==="")) formData[f] = input.value.trim();
+    try{
+        const res = await fetch("/generate", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({formData, documentType: docType})
         });
+        const data = await res.json();
 
-        const missing = requiredFields.filter(f => !formData[f] || formData[f]==="");
-        if(missing.length) return resultDiv.textContent = "⚠️ Champs manquants: " + missing.join(", ");
+        if(res.ok){
+            // Base64 -> Blob
+            const pdfBlob = base64ToBlob(data.pdfBase64, "application/pdf");
+            const docxBlob = base64ToBlob(data.docxBase64, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+            const zipBlob = base64ToBlob(data.zipBase64, "application/zip");
 
-        resultDiv.textContent = "⏳ Génération en cours...";
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            const docxUrl = URL.createObjectURL(docxBlob);
+            const zipUrl = URL.createObjectURL(zipBlob);
 
-        try {
-            const res = await fetch("https://rgpdtrankility.vercel.app/generate", {
-                method:"POST",
-                headers:{"Content-Type":"application/json"},
-                body: JSON.stringify({formData, documentType: docType})
-            });
-            const data = await res.json();
-            if(res.ok){
-                resultDiv.innerHTML = `
-                    ✅ Document généré !<br>
-                    <a href="${data.pdfUrl}" download class="download-btn">PDF</a>
-                    <a href="${data.docxUrl}" download class="download-btn">Word</a>
-                    <a href="${data.zipUrl}" download class="download-btn">ZIP</a>
-                `;
+            // Historique
+            const historyKey = `history_${currentUser.name}`;
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+            const date = new Date().toLocaleString();
+            history.push({date, pdfUrl, docxUrl, zipUrl});
+            localStorage.setItem(historyKey, JSON.stringify(history));
 
-                // Sauvegarde dans l'historique
-                if(currentUser){
-                    const historyKey = `history_${currentUser.name}`;
-                    let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-                    history.push({
-                        date: new Date().toLocaleString(),
-                        docType,
-                        pdfUrl: data.pdfUrl,
-                        docxUrl: data.docxUrl,
-                        zipUrl: data.zipUrl
-                    });
-                    localStorage.setItem(historyKey, JSON.stringify(history));
-                }
+            msgDiv.innerHTML = `
+                ✅ Document généré !<br>
+                <a href="${pdfUrl}" download="Politique_RGPD.pdf">PDF</a> |
+                <a href="${docxUrl}" download="Politique_RGPD.docx">Word</a> |
+                <a href="${zipUrl}" download="Politique_RGPD.zip">ZIP</a>
+            `;
+        } else {
+            msgDiv.textContent = "❌ "+data.error;
+        }
+    } catch(err){
+        msgDiv.textContent="❌ Erreur réseau ou serveur";
+        console.error(err);
+    }
+});
 
-            } else resultDiv.textContent = "❌ "+data.error;
-        } catch(err){ resultDiv.textContent="❌ Erreur réseau ou serveur"; console.error(err); }
-    });
+function base64ToBlob(base64, type){
+    const binary = atob(base64);
+    const array = new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++) array[i] = binary.charCodeAt(i);
+    return new Blob([array], {type});
 }
-
-/* ---------------- Charger formulaire si onglet actif au chargement ---------------- */
-if(document.querySelector(".tab-btn.active").dataset.tab === "FormulaireRGPD") initFormulaireRGPD();
-
 </script>
 <script src="header.js"></script>
 </body>
