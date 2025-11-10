@@ -3,7 +3,7 @@ import fs from "fs";
 import { generateRGPD } from "./Politique_confidentialite_generale_RGPD.js";
 
 // Créer le dossier downloads
-const downloadsDir = path.join("downloads");
+const downloadsDir = path.join("/tmp");
 if (!fs.existsSync(downloadsDir)) fs.mkdirSync(downloadsDir, { recursive: true });
 
 export async function generateDocuments(data, documentType) {
