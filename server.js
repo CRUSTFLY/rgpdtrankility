@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 
 
+
 import { generateDocuments } from "./generateDocs.js";
 
 const app = express();
@@ -15,9 +16,13 @@ import fs from "fs";
 import { generateDocuments } from "./generateDocs.js";
 import fs from "fs";
 
+import { generateDocuments } from "./generateDocs.js";
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 
 // POST pour générer un document
 
@@ -106,6 +111,23 @@ app.post("/chat", async (req, res) => {
     console.error("Erreur ChatGPT :", err);
     res.status(500).json({ reply: "Erreur lors de la communication avec l'API OpenAI." });
   }
+
+app.post("/generate", async (req, res) => {
+    try {
+        const { formData, documentType } = req.body;
+        const zipStream = await generateDocuments(formData, documentType);
+
+        res.set({
+            "Content-Type": "application/zip",
+            "Content-Disposition": 'attachment; filename="documents.zip"',
+        });
+
+        zipStream.pipe(res);
+    } catch (err) {
+        console.error("Erreur serveur:", err);
+        res.status(500).json({ error: err.message });
+    }
+
 });
 
 const PORT = process.env.PORT || 3000;
