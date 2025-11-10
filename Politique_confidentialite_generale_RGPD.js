@@ -197,6 +197,9 @@ Selon le droit applicable, vous disposez du droit de :
 
 		// Construire le chemin absolu vers le dossier fonts
 		const fontsDir = path.join(__dirname, "public", "fonts");
+		
+		// Construire le chemin absolu vers le dossier images
+		const imagesDir = path.join(__dirname, "public", "images");
 
 		// Enregistrer les polices
 		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
@@ -227,7 +230,7 @@ Selon le droit applicable, vous disposez du droit de :
 			});
 
 		// Logo centré sous le titre
-		const logoPath = "public/images/logo_rgpd_trankility.png";
+		const logoPath = path.join(imagesDir, "logo_rgpd_trankility.png");
 		if (fs.existsSync(logoPath)) {
 			pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
 		} else {
@@ -363,7 +366,7 @@ Selon le droit applicable, vous disposez du droit de :
 				new Paragraph({
 				children: [
 					new ImageRun({
-					data: fs.readFileSync("public/images/logo_rgpd_trankility.png"),
+					data: fs.readFileSync(path.join(imagesDir, "logo_rgpd_trankility.png")),
 					transformation: {
 						width: 200,
 						height: 200,
