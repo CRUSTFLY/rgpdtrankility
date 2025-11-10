@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 
@@ -112,15 +113,19 @@ app.post("/chat", async (req, res) => {
     res.status(500).json({ reply: "Erreur lors de la communication avec l'API OpenAI." });
   }
 
-app.post("/generate", async (req, res) => {
-    try {
-        const { formData, documentType } = req.body;
-        const zipStream = await generateDocuments(formData, documentType);
 
-        res.set({
-            "Content-Type": "application/zip",
-            "Content-Disposition": 'attachment; filename="documents.zip"',
-        });
+app.post("/generate", async (req, res) => {
+  try {
+    const { formData, documentType } = req.body;
+    const { pdfBuffer, docxBuffer } = await generateDocuments(formData, documentType);
+
+    const zipStream = new PassThrough();
+    const archive = archiver("zip", { zlib: { level: 9 } });
+    archive.pipe(zipStream);
+    archive.append(pdfBuffer, { name: "document.pdf" });
+    archive.append(docxBuffer, { name: "document.docx" });
+    archive.finalize();
+
 
         zipStream.pipe(res);
     } catch (err) {
@@ -134,3 +139,16 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 
 export default app;
+
+    res.set({
+      "Content-Type": "application/zip",
+      "Content-Disposition": 'attachment; filename="documents.zip"',
+    });
+
+    zipStream.pipe(res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
