@@ -1,86 +1,73 @@
-// Politique_confidentialite_generale_RGPD.js
 import PDFDocument from "pdfkit";
-import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumber } from "docx";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import { Document, Packer, Paragraph, TextRun, AlignmentType } from "docx";
+import archiver from "archiver";
+import streamBuffers from "stream-buffers";
 
-// Pour les chemins images/polices
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const fontsDir = path.join(__dirname, "public", "fonts");
-const imagesDir = path.join(__dirname, "public", "images");
-
-const nomFichier = "Politique de confidentialité générale RGPD";
-
-// --- Fonction principale ---
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
-    // --- TEXTE ---
-    const titre = nomFichier;
-    const introduction = `Le présent document est établi au nom de la ${entreprise} sus nommée ${sigle}.`;
-    const soustitre1 = `1. Politique de confidentialité`;
-    const texte1 = `${entreprise} s’engage fermement à protéger votre sphère privée. La présente politique de confidentialité (la Politique) s’applique au traitement de vos données personnelles en relation avec l’utilisation de nos services et à l’exécution de nos prestations.`;
-    
-    // (Ajoute ici tous les autres sous-titres et textes que tu avais définis, comme soustitre2, texte2, puces3, etc.)
 
-    // --- Génération PDF en mémoire ---
+    const texte = `
+POLITIQUE DE CONFIDENTIALITÉ RGPD
+
+1. Collecte des données
+- Nom et prénom
+- Coordonnées professionnelles
+- Informations sur l’entreprise
+
+2. Utilisation des données
+- Gestion administrative
+- Communication client/partenaire
+- Conformité légale
+
+3. Partage des données
+- Seulement aux autorités légales si requis
+- Prestataires techniques respectant la confidentialité
+
+4. Sécurité et conservation
+- Mesures techniques et organisationnelles mises en place
+
+5. Vos droits
+- Accéder, rectifier ou supprimer vos données
+- Vous opposer à leur traitement
+
+Contact : ${entreprise} (${sigle})
+Adresse : ${adressesiege}, ${cpsiege} ${villesiege}
+Téléphone : ${numtelsiege}
+Nom du responsable : ${nom} ${prenom}
+`;
+
+    // --- PDF ---
+    const pdfStream = new streamBuffers.WritableStreamBuffer();
     const pdfDoc = new PDFDocument({ margin: 50 });
-    const pdfChunks = [];
-    pdfDoc.on("data", (chunk) => pdfChunks.push(chunk));
-    pdfDoc.font("Helvetica-Bold").fontSize(32).fillColor("#ebc015").text(titre, { align: "center" });
-    pdfDoc.moveDown(2);
-    pdfDoc.font("Helvetica").fontSize(12).fillColor("#000000").text(introduction, { align: "justify" });
-    pdfDoc.addPage();
-    pdfDoc.font("Helvetica-Bold").fontSize(14).fillColor("#ebc015").text(soustitre1, { align: "left" });
-    pdfDoc.font("Helvetica").fontSize(12).fillColor("#000000").text(texte1, { align: "justify" });
+    pdfDoc.pipe(pdfStream);
+    pdfDoc.fontSize(16).text("Politique de confidentialité RGPD", { align: "center" });
+    pdfDoc.moveDown();
+    pdfDoc.fontSize(12).text(texte);
     pdfDoc.end();
-    await new Promise((resolve) => pdfDoc.on("end", resolve));
-    const pdfBuffer = Buffer.concat(pdfChunks);
+    await new Promise(res => pdfDoc.on("end", res));
+    const pdfBase64 = pdfStream.getContentsAsString("base64");
 
-    // --- Génération DOCX en mémoire ---
+    // --- DOCX ---
     const doc = new Document({
-        sections: [
-            {
-                properties: {
-                    page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } },
-                },
-                footers: {
-                    default: new Footer({
-                        children: [
-                            new Paragraph({
-                                alignment: AlignmentType.RIGHT,
-                                children: [
-                                    new TextRun({ text: "Page ", font: "Calibri Light", size: 18, color: "A0A0A0" }),
-                                    new TextRun({ children: [PageNumber.CURRENT], font: "Calibri Light", size: 18, color: "A0A0A0" }),
-                                ],
-                            }),
-                        ],
-                    }),
-                },
-                children: [
-                    new Paragraph({
-                        children: [new TextRun({ text: titre, bold: true, color: "ebc015", size: 64, font: "Calibri Bold" })],
-                        alignment: AlignmentType.CENTER,
-                        spacing: { before: 5000, after: 1000 },
-                    }),
-                    new Paragraph({ text: "" }),
-                    new Paragraph({
-                        children: [new TextRun({ text: introduction, font: "Calibri Light", size: 22 })],
-                        spacing: { after: 200 },
-                    }),
-                    new Paragraph({
-                        children: [new TextRun({ text: soustitre1, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                        spacing: { before: 200 },
-                    }),
-                    new Paragraph({ children: [new TextRun({ text: texte1, font: "Calibri Light", size: 22 })] }),
-                    // Ajoute ici tous les autres blocs et puces de manière similaire
-                ],
-            },
-        ],
+        sections: [{
+            children: [
+                new Paragraph({ children: [new TextRun({ text: "Politique de confidentialité RGPD", bold:true, size:36 })], alignment: AlignmentType.CENTER }),
+                ...texte.split("\n").map(l => new Paragraph({ text: l }))
+            ]
+        }]
     });
+    const bufferDocx = await Packer.toBuffer(doc);
+    const docxBase64 = bufferDocx.toString("base64");
 
-    const docxBuffer = await Packer.toBuffer(doc);
+    // --- ZIP ---
+    const zipStream = new streamBuffers.WritableStreamBuffer();
+    const archive = archiver("zip", { zlib: { level: 9 } });
+    archive.pipe(zipStream);
 
-    // --- Retour des buffers PDF et DOCX ---
-    return { pdfBuffer, docxBuffer };
+    archive.append(Buffer.from(pdfBase64, "base64"), { name: "Politique_RGPD.pdf" });
+    archive.append(Buffer.from(docxBase64, "base64"), { name: "Politique_RGPD.docx" });
+    await archive.finalize();
+    await new Promise(res => zipStream.on("finish", res));
+    const zipBase64 = zipStream.getContentsAsString("base64");
+
+    return { pdfBase64, docxBase64, zipBase64 };
 }
