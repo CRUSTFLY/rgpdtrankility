@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 
+
 import { generateDocuments } from "./generateDocs.js";
 
 const app = express();
@@ -10,15 +11,13 @@ app.use(express.json());
 
 
 import fs from "fs";
+
 import { generateDocuments } from "./generateDocs.js";
+import fs from "fs";
 
 const app = express();
-const __dirname = path.resolve();
-
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/downloads", express.static(path.join(__dirname, "downloads")));
 
 // POST pour générer un document
 
@@ -44,13 +43,27 @@ app.post("/generate", async (req, res) => {
             return res.status(400).json({ error: `Champs manquants: ${missingFields.join(", ")}` });
         }
 
+        // Générer les documents
         const { pdfPath, docxPath, zipPath } = await generateDocuments(formData, documentType);
-        const baseName = path.basename(pdfPath);
 
+        // Lire les fichiers et les encoder en base64
+        const pdfData = fs.readFileSync(pdfPath).toString("base64");
+        const docxData = fs.readFileSync(docxPath).toString("base64");
+        const zipData = fs.readFileSync(zipPath).toString("base64");
+
+        // Supprimer les fichiers temporaires après lecture
+        [pdfPath, docxPath, zipPath].forEach(f => fs.unlinkSync(f));
+
+        // Retourner les fichiers encodés
         res.json({
-            pdfUrl: `/downloads/${baseName}`,
-            docxUrl: `/downloads/${path.basename(docxPath)}`,
-            zipUrl: `/downloads/${path.basename(zipPath)}`
+            pdf: pdfData,
+            docx: docxData,
+            zip: zipData,
+            filenames: {
+                pdf: "Politique_de_confidentialite_RGPD.pdf",
+                docx: "Politique_de_confidentialite_RGPD.docx",
+                zip: "Politique_de_confidentialite_RGPD.zip"
+            }
         });
 
     } catch(err) {
@@ -98,3 +111,4 @@ app.post("/chat", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 
+export default app;
