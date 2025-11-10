@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import PDFDocument from "pdfkit";
 import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumber } from "docx";
 import archiver from "archiver";
@@ -191,8 +192,11 @@ Selon le droit applicable, vous disposez du droit de :
 		const stream = fs.createWriteStream(pdfPath);
 		pdfDoc.pipe(stream);
 			
+		const __filename = fileURLToPath(import.meta.url);
+		const __dirname = path.dirname(__filename);
+
 		// Construire le chemin absolu vers le dossier fonts
-		const fontsDir = path.join("public", "fonts");
+		const fontsDir = path.join(__dirname, "public", "fonts");
 
 		// Enregistrer les polices
 		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
