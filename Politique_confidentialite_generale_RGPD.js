@@ -189,24 +189,15 @@ Selon le droit applicable, vous disposez du droit de :
     pdfStream.on("data", chunk => pdfChunks.push(chunk));
 	
 	// Polices
-    const fontsDir = path.join("public", "fonts");
+    const fontsDir = path.resolve("public/fonts");
     if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
     if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
-
-    // PAGE DE GARDE
-    pdfDoc.font("Calibri Bold").fontSize(32).fillColor("#ebc015").text(titre, { align: "center" });
-    if (fs.existsSync(logoPath)) {
-      pdfDoc.image(logoPath, pdfDoc.page.width / 2 - 75, pdfDoc.y + 20, { width: 150 });
-    }
-
-    pdfDoc.addPage();
-    pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000").text(clean(introduction), { align: "justify" });
 
     // PAGE DE GARDE
     const pageWidth = pdfDoc.page.width;
     const pageHeight = pdfDoc.page.height;
     pdfDoc.font("Calibri Bold").fontSize(32).fillColor("#ebc015").text(titre, pageWidth / 2 - 250, pageHeight / 2 - 100, { width: 500, align: "center" });
-    const logoPath = path.join("public", "fonts","logo_rgpd_trankility.png");
+    const logoPath = path.join("public", "images","logo_rgpd_trankility.png");
     if (fs.existsSync(logoPath)) {
       pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
     } else {
