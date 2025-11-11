@@ -9,6 +9,9 @@ import { PassThrough } from "stream";
 /**
  * Retourne { pdfBase64, docxBase64, zipBase64 }.
  */
+ 
+// ===== Variable pour le nom du fichier =====
+const nomFichier = "Politique de confidentialité générale RGPD";
 
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege, downloadsDir) {
 
@@ -617,15 +620,12 @@ const doc = new Document({
     },
   ],
 });
-
-  // ===== Variable pour le nom du fichier =====
-  const nomFichier = "Politique de confidentialité générale RGPD";
 	  
   const docxBuffer = await Packer.toBuffer(doc);
   const docxBase64 = docxBuffer.toString("base64");
-  const pdfPath = path.join(downloadsDir, `Politique de confidentialité générale RGPD.pdf`);
-  const docxPath = path.join(downloadsDir, `Politique de confidentialité générale RGPD.docx`);
-  const zipPath = path.join(downloadsDir, `Politique de confidentialité générale RGPD.zip`);
+  const pdfPath = path.join(downloadsDir, `${nomFichier}.pdf`);
+  const docxPath = path.join(downloadsDir, `${nomFichier}.docx`);
+  const zipPath = path.join(downloadsDir, `${nomFichier}.zip`);
 
   // --- Génération DOCX ---
   const buffer = await Packer.toBuffer(doc);   
