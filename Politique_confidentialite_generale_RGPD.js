@@ -317,7 +317,67 @@ Selon le droit applicable, vous disposez du droit de :
 // --- DOCX ---
 const doc = new Document({
   sections: [
-    {
+		    // --- PAGE DE GARDE ---
+		{
+			properties: {
+				page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } }, 
+			},
+      // --- Pied de page ---
+      footers: {
+        default: new Footer({
+          children: [
+            new Paragraph({
+              alignment: AlignmentType.RIGHT,
+              children: [
+                new TextRun({
+                  text: "Page ",
+                  font: "Calibri Light",
+                  size: 18,
+                  color: "A0A0A0",
+                }),
+                new TextRun({
+					children: [PageNumber.CURRENT],
+					font: "Calibri Light",
+					size: 18,
+					color: "A0A0A0",
+				}),
+              ],
+            }),
+          ],
+        }),
+      },
+			children: [
+				new Paragraph({
+				children: [
+					new TextRun({
+					text: safeText(titre), // ton nom de document
+					bold: true,
+					color: "ebc015",
+					size: 64,
+					font: "Calibri Bold",
+					}),
+				],
+				alignment: "center",
+				spacing: { before: 5000, after: 1000 }, // centré verticalement
+				}),
+
+				// --- Logo au centre ---
+				new Paragraph({
+				children: [
+					new ImageRun({
+					data: fs.readFileSync("public/images/logo_rgpd_trankility.png"),
+					transformation: {
+						width: 200,
+						height: 200,
+					},
+					}),
+				],
+				alignment: "center",
+				spacing: { after: 5000 },
+				}),
+			],
+		},
+	{
       children: [
         new Paragraph({ text: "" }),
 
