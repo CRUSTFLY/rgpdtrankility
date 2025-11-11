@@ -337,6 +337,7 @@ Selon le droit applicable, vous disposez du droit de :
 				],
 			}),
 		],
+		}),
 		},
 			children: [
 				new Paragraph({
