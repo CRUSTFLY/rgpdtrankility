@@ -270,7 +270,7 @@ Selon le droit applicable, vous disposez du droit de :
 		
     pdfDoc.end();
 	await new Promise((resolve, reject) => {
-		pdfStream.on("end", resolve);
+		pdfStream.on("finish", resolve);
 		pdfStream.on("error", reject);
 	});
 
@@ -587,7 +587,7 @@ Selon le droit applicable, vous disposez du droit de :
 
     await archive.finalize();
     await new Promise((resolve, reject) => {
-		zipStream.on("close", resolve);
+		zipStream.on("finish", resolve);
 		zipStream.on("error", reject);
 	});
 
