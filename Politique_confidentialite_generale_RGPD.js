@@ -350,7 +350,7 @@ const doc = new Document({
 				new Paragraph({
 				children: [
 					new TextRun({
-					text: safeText(titre), // ton nom de document
+					text: titre, // ton nom de document
 					bold: true,
 					color: "ebc015",
 					size: 64,
