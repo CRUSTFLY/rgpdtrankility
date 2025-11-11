@@ -315,8 +315,6 @@ Selon le droit applicable, vous disposez du droit de :
   const pdfBase64 = pdfBuffer.toString("base64");
   
   // DOCX
-  // Fonction helper pour nettoyer le texte
-  const safeText = (txt) => (typeof txt === "string" ? txt.trim() : "");
 
   // Nettoyage de texte
   const safeText = (txt) =>
