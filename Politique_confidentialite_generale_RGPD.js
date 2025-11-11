@@ -270,9 +270,10 @@ Selon le droit applicable, vous disposez du droit de :
 		
     pdfDoc.end();
 	await new Promise((resolve, reject) => {
-      pdfStream.on("end", resolve);
-      pdfStream.on("error", reject);
-    });
+		pdfStream.on("end", resolve);
+		pdfStream.on("error", reject);
+	});
+
 
     const pdfBuffer = Buffer.concat(pdfChunks);
     const pdfBase64 = pdfBuffer.toString("base64");
@@ -585,7 +586,10 @@ Selon le droit applicable, vous disposez du droit de :
     archive.append(docxBuffer, { name: "Politique_RGPD.docx" });
 
     await archive.finalize();
-    await new Promise((resolve, reject) => { zipStream.on("end", resolve); zipStream.on("error", reject); });
+    await new Promise((resolve, reject) => {
+		zipStream.on("close", resolve);
+		zipStream.on("error", reject);
+	});
 
     const zipBuffer = Buffer.concat(zipChunks);
     const zipBase64 = zipBuffer.toString("base64");
