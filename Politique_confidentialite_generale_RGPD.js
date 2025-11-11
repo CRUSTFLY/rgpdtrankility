@@ -334,20 +334,6 @@ Selon le droit applicable, vous disposez du droit de :
                   size: 18,
                   color: "A0A0A0",
                 }),
-                // insère le token PageNumber.CURRENT ici (pas de new)
-				new Paragraph({
-					alignment: AlignmentType.RIGHT,
-					children: [
-					new TextRun({
-					text: "Page ",
-					font: "Calibri Light",
-					size: 18,
-					color: "A0A0A0",
-					}),
-					PageNumber.CURRENT,
-				],
-				}),
-
 				],
 			}),
 		},
