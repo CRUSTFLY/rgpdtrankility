@@ -366,7 +366,7 @@ const doc = new Document({
           spacing: { before: 5000, after: 1000 },
         }),
 
-        logoExists
+        fs.existsSync(logoPath)
           ? new Paragraph({
               alignment: AlignmentType.CENTER,
               children: [
