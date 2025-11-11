@@ -617,15 +617,15 @@ const doc = new Document({
     },
   ],
 });
+
+  // ===== Variable pour le nom du fichier =====
+  const nomFichier = "Politique de confidentialité générale RGPD";
 	  
   const docxBuffer = await Packer.toBuffer(doc);
   const docxBase64 = docxBuffer.toString("base64");
   const pdfPath = path.join(downloadsDir, `${nomFichier}.pdf`);
   const docxPath = path.join(downloadsDir, `${nomFichier}.docx`);
   const zipPath = path.join(downloadsDir, `${nomFichier}.zip`);
-  
-  // ===== Variable pour le nom du fichier =====
-  const nomFichier = "Politique de confidentialité générale RGPD";
 
   // --- Génération DOCX ---
   const buffer = await Packer.toBuffer(doc);   
