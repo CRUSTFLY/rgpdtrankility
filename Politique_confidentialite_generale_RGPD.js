@@ -172,11 +172,6 @@ Selon le droit applicable, vous disposez du droit de :
         "Formuler une réclamation auprès de la CNIL dont le site internet est accessible à l’adresse suivante www.cnil.fr et le siège est situé 3 Place de Fontenoy – TSA 80715 - 75334 Paris Cedex 07",
       ];
 	  
-    // Polices
-    const fontsDir = path.join("public", "fonts");
-    if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
-    if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
-	  
     const clean = txt =>
       (txt || "")
         .replace(/[“”«»]/g, '"')
@@ -192,6 +187,11 @@ Selon le droit applicable, vous disposez du droit de :
     const pdfStream = new PassThrough();
     pdfDoc.pipe(pdfStream);
     pdfStream.on("data", chunk => pdfChunks.push(chunk));
+	
+	// Polices
+    const fontsDir = path.join("public", "fonts");
+    if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
+    if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
 
     // PAGE DE GARDE
     pdfDoc.font("Calibri Bold").fontSize(32).fillColor("#ebc015").text(titre, { align: "center" });
