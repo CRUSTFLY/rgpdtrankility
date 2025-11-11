@@ -1,24 +1,16 @@
 {
-  "type": "module",
-  "name": "generateur-documents",
+  "name": "rgpdtrankility",
   "version": "1.0.0",
-  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "vercel dev"
   },
   "dependencies": {
-    "archiver": "^7.0.0",
-    "cors": "^2.8.5",
-    "docx": "^8.1.0",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "node-fetch": "^3.3.2",
-    "pdfkit": "^0.15.2",
-    "puppeteer": "^24.29.1",
-    "stream-buffers": "^3.0.3"
+    "archiver": "^5.3.1",
+    "docx": "^8.3.0",
+    "pdfkit": "^0.13.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "devDependencies": {
+    "@vercel/node": "^2.14.0"
+  }
 }

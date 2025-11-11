@@ -1,11 +1,15 @@
+// Politique_confidentialite_generale_RGPD.js
 import PDFDocument from "pdfkit";
 import { Document, Packer, Paragraph, TextRun, AlignmentType } from "docx";
 import archiver from "archiver";
-import streamBuffers from "stream-buffers";
+import { PassThrough } from "stream";
 
+/**
+ * Retourne { pdfBase64, docxBase64, zipBase64 }.
+ */
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
 
-    const texte = `
+  const texte = `
 POLITIQUE DE CONFIDENTIALITÉ RGPD
 
 1. Collecte des données
@@ -35,39 +39,56 @@ Téléphone : ${numtelsiege}
 Nom du responsable : ${nom} ${prenom}
 `;
 
-    // --- PDF ---
-    const pdfStream = new streamBuffers.WritableStreamBuffer();
-    const pdfDoc = new PDFDocument({ margin: 50 });
-    pdfDoc.pipe(pdfStream);
-    pdfDoc.fontSize(16).text("Politique de confidentialité RGPD", { align: "center" });
-    pdfDoc.moveDown();
-    pdfDoc.fontSize(12).text(texte);
-    pdfDoc.end();
-    await new Promise(res => pdfDoc.on("end", res));
-    const pdfBase64 = pdfStream.getContentsAsString("base64");
+  // --- Génération PDF dans un buffer ---
+  const pdfDoc = new PDFDocument({ margin: 50 });
+  const pdfStream = new PassThrough();
+  const pdfChunks = [];
+  pdfStream.on("data", chunk => pdfChunks.push(chunk));
+  const pdfFinished = new Promise((resolve, reject) => {
+    pdfStream.on("end", resolve);
+    pdfStream.on("error", reject);
+  });
+  pdfDoc.pipe(pdfStream);
+  pdfDoc.fontSize(16).text("Politique de confidentialité RGPD", { align: "center" });
+  pdfDoc.moveDown();
+  pdfDoc.fontSize(12).text(texte);
+  pdfDoc.end();
+  await pdfFinished;
+  const pdfBuffer = Buffer.concat(pdfChunks);
+  const pdfBase64 = pdfBuffer.toString("base64");
 
-    // --- DOCX ---
-    const doc = new Document({
-        sections: [{
-            children: [
-                new Paragraph({ children: [new TextRun({ text: "Politique de confidentialité RGPD", bold:true, size:36 })], alignment: AlignmentType.CENTER }),
-                ...texte.split("\n").map(l => new Paragraph({ text: l }))
-            ]
-        }]
-    });
-    const bufferDocx = await Packer.toBuffer(doc);
-    const docxBase64 = bufferDocx.toString("base64");
+  // --- DOCX ---
+  const doc = new Document({
+    sections: [{
+      children: [
+        new Paragraph({
+          children: [ new TextRun({ text: "Politique de confidentialité RGPD", bold: true, size: 36 }) ],
+          alignment: AlignmentType.CENTER
+        }),
+        ...texte.split("\n").map(line => new Paragraph({ children: [ new TextRun({ text: line }) ] }))
+      ]
+    }]
+  });
+  const docxBuffer = await Packer.toBuffer(doc);
+  const docxBase64 = docxBuffer.toString("base64");
 
-    // --- ZIP ---
-    const zipStream = new streamBuffers.WritableStreamBuffer();
-    const archive = archiver("zip", { zlib: { level: 9 } });
-    archive.pipe(zipStream);
+  // --- ZIP (archive en mémoire via archiver) ---
+  const zipStream = new PassThrough();
+  const zipChunks = [];
+  zipStream.on("data", c => zipChunks.push(c));
+  const zipFinished = new Promise((resolve, reject) => {
+    zipStream.on("end", resolve);
+    zipStream.on("error", reject);
+  });
 
-    archive.append(Buffer.from(pdfBase64, "base64"), { name: "Politique_RGPD.pdf" });
-    archive.append(Buffer.from(docxBase64, "base64"), { name: "Politique_RGPD.docx" });
-    await archive.finalize();
-    await new Promise(res => zipStream.on("finish", res));
-    const zipBase64 = zipStream.getContentsAsString("base64");
+  const archive = archiver("zip", { zlib: { level: 9 } });
+  archive.pipe(zipStream);
+  archive.append(pdfBuffer, { name: "Politique_RGPD.pdf" });
+  archive.append(docxBuffer, { name: "Politique_RGPD.docx" });
+  await archive.finalize();
+  await zipFinished;
+  const zipBuffer = Buffer.concat(zipChunks);
+  const zipBase64 = zipBuffer.toString("base64");
 
-    return { pdfBase64, docxBase64, zipBase64 };
+  return { pdfBase64, docxBase64, zipBase64 };
 }
