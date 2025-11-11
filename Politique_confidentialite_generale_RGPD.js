@@ -196,12 +196,14 @@ Selon le droit applicable, vous disposez du droit de :
   });
   pdfDoc.pipe(pdfStream);
   
-  		// Construire le chemin absolu vers le dossier fonts
-		const fontsDir = path.join("public", "fonts");
+// Polices 
+const fontsDir = path.resolve("public/fonts"); 
 
-		// Enregistrer les polices
-		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
-		pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
+if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) 
+pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf")); 
+
+if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) 
+	pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
 		
 		  // ---- Nettoyage du texte ----
 		const clean = txt =>
