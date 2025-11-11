@@ -621,31 +621,32 @@ const doc = new Document({
   ],
 });
 	  
-  const docxBuffer = await Packer.toBuffer(doc);
-  const docxBase64 = docxBuffer.toString("base64");
+// --- Génération DOCX en mémoire ---
+const docxBuffer = await Packer.toBuffer(doc);
+const docxBase64 = docxBuffer.toString("base64");
 
-  // --- Génération DOCX ---
-  const buffer = await Packer.toBuffer(doc);   
-  fs.writeFileSync("Politique_de_confidentialité_RGPD.docx", buffer);
+// --- ZIP (archive en mémoire via archiver) ---
+const zipStream = new PassThrough();
+const zipChunks = [];
+zipStream.on("data", c => zipChunks.push(c));
+const zipFinished = new Promise((resolve, reject) => {
+  zipStream.on("end", resolve);
+  zipStream.on("error", reject);
+});
 
-  // --- ZIP (archive en mémoire via archiver) ---
-  const zipStream = new PassThrough();
-  const zipChunks = [];
-  zipStream.on("data", c => zipChunks.push(c));
-  const zipFinished = new Promise((resolve, reject) => {
-    zipStream.on("end", resolve);
-    zipStream.on("error", reject);
-  });
+const archive = archiver("zip", { zlib: { level: 9 } });
+archive.pipe(zipStream);
 
-  const archive = archiver("zip", { zlib: { level: 9 } });
-  archive.pipe(zipStream);
-  archive.append(pdfBuffer, { name: "Politique_de_confidentialité_RGPD.pdf" });
-  archive.append(docxBuffer, { name: "Politique_de_confidentialité_RGPD.docx" });
-  await archive.finalize();
-  await zipFinished;
-  const zipBuffer = Buffer.concat(zipChunks);
-  const zipBase64 = zipBuffer.toString("base64");
+// Ajouter les fichiers au ZIP directement depuis les buffers
+archive.append(pdfBuffer, { name: "Politique_de_confidentialite_RGPD.pdf" });
+archive.append(docxBuffer, { name: "Politique_de_confidentialite_RGPD.docx" });
 
-  return { pdfBase64, docxBase64, zipBase64 };
+await archive.finalize();
+await zipFinished;
+
+const zipBuffer = Buffer.concat(zipChunks);
+const zipBase64 = zipBuffer.toString("base64");
+
+return { pdfBase64, docxBase64, zipBase64 };
 }
 
