@@ -313,10 +313,6 @@ Selon le droit applicable, vous disposez du droit de :
   await pdfFinished;
   const pdfBuffer = Buffer.concat(pdfChunks);
   const pdfBase64 = pdfBuffer.toString("base64");
- 
-	const logoImage = fs.existsSync(logoPath)
-	? fs.readFileSync(logoPath)
-	: null;
   
 // --- DOCX ---
 const doc = new Document({
@@ -348,6 +344,7 @@ const doc = new Document({
           ],
         }),
       },
+	},
 	{
       children: [
         new Paragraph({ text: "" }),
