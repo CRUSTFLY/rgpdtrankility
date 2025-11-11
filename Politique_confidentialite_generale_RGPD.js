@@ -7,6 +7,17 @@ import fs from "fs";
 
 /**
  * Retourne { pdfBase64, docxBase64, zipBase64 }.
+ * Génère PDF, DOCX et ZIP à partir des infos nom/prenom/date/entreprise
+ * @param {string} nom
+ * @param {string} prenom
+ * @param {string} entreprise
+ * @param {string} sigle
+ * @param {string} adressesiege
+ * @param {string} cpsiege
+ * @param {string} villesiege
+ * @param {string} numtelsiege
+ * @param {string} downloadsDir
+ * @returns {Promise<{pdfPath:string, docxPath:string, zipPath:string}>}
  */
 
 // ===== Variable pour le nom du fichier =====
@@ -273,9 +284,10 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte13)).moveDown(1);
 		puces13.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
 		
+	pdfDoc.pipe(fs.createWriteStream(pdfPath));
     pdfDoc.end();
 	await new Promise((resolve, reject) => {
-		pdfStream.on("finish", resolve);
+		pdfStream.on("end", resolve);
 		pdfStream.on("error", reject);
 	});
 
@@ -577,11 +589,10 @@ Selon le droit applicable, vous disposez du droit de :
           },
         ],
       });
-    const docxBuffer = await Packer.toBuffer(doc);
-    const docxBase64 = docxBuffer.toString("base64");
+    const buffer = await Packer.toBuffer(doc);
+    const docxBase64 = buffer.toString("base64");
 
       // --- Génération DOCX ---
-      const buffer = await Packer.toBuffer(doc);
       fs.writeFileSync(docxPath, buffer);
       console.log(`DOCX créé: ${docxPath}`);
 
