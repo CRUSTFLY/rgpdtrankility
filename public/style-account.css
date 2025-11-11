@@ -555,23 +555,25 @@ footer {
 
 /* ===== BOUTON GENERATEUR DE DOCUMENTS ===== */
 .btn-gendoc {
+	display: inline-flex;  
     align-self: center;
     background-color: #000;
     color: #fff;
     border: 2px solid #000;
-    border-radius: 10px;
+    border-radius: 0.6rem;
     padding: 0.5rem 1rem;
     font-size: 1rem;
     font-weight: 600;
     transition: all 0.3s ease;
     cursor: pointer;
+	text-decoration: none;
 }
 
 .btn-gendoc:hover {
-    background-color: #222222; /* fond un peu plus clair */
-    color: #ebc015;            /* texte doré */
-    border-color: #ebc015;     /* bordure dorée au hover */
-    transform: translateY(-2px); /* léger effet de "soulèvement" */
+    background-color: #222222; 
+    color: #ebc015;            
+    border-color: #ebc015;     
+    transform: translateY(-2px); 
 }
 
 /* ===== REGENERER UN DOCUMENT ===== */

@@ -30,7 +30,6 @@
         <section id="monCompte" class="active">
             <h2 id="welcomeMsg">Bienvenue sur votre compte</h2>
             <p>Gérez vos paramètres RGPD et consultez l’historique des consentements ici.</p>
-            <a href="generateurdocuments.html" class="btn-gendoc">Accéder au Générateur de Documents</a>
         </section>
 
         <!-- Formulaire RGPD -->
@@ -177,9 +176,9 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
 
             msgDiv.innerHTML = `
                 ✅ Document généré !<br>
-                <a href="${pdfUrl}" download="${fileName}.pdf" class="btn-gendoc">PDF</a> |
-                <a href="${docxUrl}" download="${fileName}.docx" class="btn-gendoc">Word</a> |
-                <a href="${zipUrl}" download="${fileName}.zip" class="btn-gendoc">ZIP</a>
+                <a href="${pdfUrl}" download="${fileName}.pdf" class="pdf">PDF</a> |
+                <a href="${docxUrl}" download="${fileName}.docx" class="word">Word</a> |
+                <a href="${zipUrl}" download="${fileName}.zip" class="zip">ZIP</a>
             `;
         } else {
             msgDiv.textContent = "❌ "+data.error;
