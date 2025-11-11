@@ -14,8 +14,6 @@ const nomFichier = "Politique de confidentialité générale RGPD"; // <-- chang
 
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
   try {
-    // ===== Paths =====
-    const fontsDir = path.join("public", "fonts");
 	
     const titre = nomFichier;
     const introduction = `
