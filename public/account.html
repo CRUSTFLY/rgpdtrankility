@@ -176,9 +176,9 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
 
             msgDiv.innerHTML = `
                 ✅ Document généré !<br>
-                <a href="${pdfUrl}" download="${fileName}.pdf" class="pdf">PDF</a> |
-                <a href="${docxUrl}" download="${fileName}.docx" class="word">Word</a> |
-                <a href="${zipUrl}" download="${fileName}.zip" class="zip">ZIP</a>
+                <a href="${pdfUrl}" download="${fileName}.pdf" class="btn-gendoc">PDF</a> |
+                <a href="${docxUrl}" download="${fileName}.docx" class="btn-gendoc">Word</a> |
+                <a href="${zipUrl}" download="${fileName}.zip" class="btn-gendoc">ZIP</a>
             `;
         } else {
             msgDiv.textContent = "❌ "+data.error;
@@ -216,9 +216,9 @@ function showHistory() {
         div.innerHTML = `
 			<strong>Nom :</strong> ${entry.fileName || "Inconnu"}<br>
             <strong>Généré le :</strong> ${entry.date}<br>
-            <a href="${entry.pdfUrl}" download><button class="btn-gendoc">PDF</button></a>
-            <a href="${entry.docxUrl}" download><button class="btn-gendoc">Word</button></a>
-            <a href="${entry.zipUrl}" download><button class="btn-gendoc">ZIP</button></a>
+            <a href="${entry.pdfUrl}" download><button class="pdf">PDF</button></a>
+            <a href="${entry.docxUrl}" download><button class="word">Word</button></a>
+            <a href="${entry.zipUrl}" download><button class="zip">ZIP</button></a>
         `;
 
         const deleteBtn = document.createElement('button');
