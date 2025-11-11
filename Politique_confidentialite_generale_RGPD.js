@@ -341,10 +341,6 @@ const doc = new Document({
           ],
         }),
       },
-	  
-	  
-	  
-	  
 	  children: [
 		new Paragraph({
 		children: [
@@ -359,11 +355,29 @@ const doc = new Document({
 		alignment: "center",
 		spacing: { before: 5000, after: 1000 }, // centré verticalement
 		}),
+		
+		
+		
+		
+				// --- Logo au centre ---
+		new Paragraph({
+		children: [
+			new ImageRun({
+			data: fs.readFileSync(path.resolve(logoPath)),
+			transformation: {
+				width: 200,
+				height: 200,
+			},
+			}),
 		],
+			alignment: "center",
+			spacing: { after: 5000 },
+		}),
+
 		
 		
 		
-		
+		],
 	},
 	{		
       children: [
