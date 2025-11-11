@@ -14,6 +14,10 @@ const nomFichier = "Politique de confidentialité générale RGPD"; // <-- chang
 
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
   try {
+    // ===== Paths =====
+    const fontsDir = path.resolve("./public/fonts");
+    const logoPath = path.resolve("./public/images/logo_rgpd_trankility.png");
+	
     const titre = nomFichier;
     const introduction = `
 Le présent document est établi au nom de la ${entreprise} sus nommée ${sigle}.
@@ -170,23 +174,12 @@ Selon le droit applicable, vous disposez du droit de :
         "Demander le transfert de vos données personnelles à une autre partie",
         "Formuler une réclamation auprès de la CNIL dont le site internet est accessible à l’adresse suivante www.cnil.fr et le siège est situé 3 Place de Fontenoy – TSA 80715 - 75334 Paris Cedex 07",
       ];
-
-    // --- Génération PDF ---
-    const pdfDoc = new PDFDocument({ margin: 50 });
-    const pdfStream = new PassThrough();
-    const pdfChunks = [];
-    pdfStream.on("data", chunk => pdfChunks.push(chunk));
-    const pdfFinished = new Promise((resolve, reject) => {
-      pdfStream.on("end", resolve);
-      pdfStream.on("error", reject);
-    });
-    pdfDoc.pipe(pdfStream);
-
+	  
     // Polices
     const fontsDir = path.join("public", "fonts");
     if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
     if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
-
+	  
     const clean = txt =>
       (txt || "")
         .replace(/[“”«»]/g, '"')
@@ -195,6 +188,25 @@ Selon le droit applicable, vous disposez du droit de :
         .replace(/[•·‣◦▪]/g, "-")
         .replace(/[^\x09\x0A\x0D\x20-\x7EÀ-ÿ€]/g, "")
         .trim();
+
+    // --- Génération PDF ---
+	const pdfDoc = new PDFDocument({ margin: 50 });
+    const pdfChunks = [];
+    const pdfStream = new PassThrough();
+    pdfDoc.pipe(pdfStream);
+    pdfStream.on("data", chunk => pdfChunks.push(chunk));
+
+    if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
+    if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
+
+    // PAGE DE GARDE
+    pdfDoc.font("Calibri Bold").fontSize(32).fillColor("#ebc015").text(titre, { align: "center" });
+    if (fs.existsSync(logoPath)) {
+      pdfDoc.image(logoPath, pdfDoc.page.width / 2 - 75, pdfDoc.y + 20, { width: 150 });
+    }
+
+    pdfDoc.addPage();
+    pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000").text(clean(introduction), { align: "justify" });
 
     // PAGE DE GARDE
     const pageWidth = pdfDoc.page.width;
@@ -272,7 +284,11 @@ Selon le droit applicable, vous disposez du droit de :
 		puces13.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
 		
     pdfDoc.end();
-    await pdfFinished;
+	await new Promise((resolve, reject) => {
+      pdfStream.on("end", resolve);
+      pdfStream.on("error", reject);
+    });
+
     const pdfBuffer = Buffer.concat(pdfChunks);
     const pdfBase64 = pdfBuffer.toString("base64");
 
@@ -573,23 +589,25 @@ Selon le droit applicable, vous disposez du droit de :
     const docxBuffer = await Packer.toBuffer(doc);
     const docxBase64 = docxBuffer.toString("base64");
 
-    // --- ZIP ---
-    const zipStream = new PassThrough();
+ // ===== ZIP =====
     const zipChunks = [];
-    zipStream.on("data", c => zipChunks.push(c));
-    const zipFinished = new Promise((resolve, reject) => { zipStream.on("end", resolve); zipStream.on("error", reject); });
+    const zipStream = new PassThrough();
     const archive = archiver("zip", { zlib: { level: 9 } });
     archive.pipe(zipStream);
+    zipStream.on("data", chunk => zipChunks.push(chunk));
+
     archive.append(pdfBuffer, { name: "Politique_RGPD.pdf" });
     archive.append(docxBuffer, { name: "Politique_RGPD.docx" });
+
     await archive.finalize();
-    await zipFinished;
+    await new Promise((resolve, reject) => { zipStream.on("end", resolve); zipStream.on("error", reject); });
+
     const zipBuffer = Buffer.concat(zipChunks);
     const zipBase64 = zipBuffer.toString("base64");
 
     return { pdfBase64, docxBase64, zipBase64 };
   } catch (err) {
-    console.error("Erreur lors de la génération RGPD :", err);
-    throw new Error("Erreur réseau ou serveur");
+    console.error("❌ Erreur complète lors de la génération RGPD :", err);
+    throw err; // laisse l'erreur originale pour voir la vraie cause
   }
 }
