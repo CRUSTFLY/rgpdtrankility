@@ -620,6 +620,9 @@ const doc = new Document({
 	  
   const docxBuffer = await Packer.toBuffer(doc);
   const docxBase64 = docxBuffer.toString("base64");
+  const pdfPath = path.join(downloadsDir, `${nomFichier}.pdf`);
+  const docxPath = path.join(downloadsDir, `${nomFichier}.docx`);
+  const zipPath = path.join(downloadsDir, `${nomFichier}.zip`);
 
   // --- Génération DOCX ---
   const buffer = await Packer.toBuffer(doc);   
