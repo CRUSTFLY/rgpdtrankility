@@ -9,11 +9,14 @@ import { PassThrough } from "stream";
 /**
  * Retourne { pdfBase64, docxBase64, zipBase64 }.
  */
+ 
+// ===== Variable pour le nom du fichier =====
+const nomFichier = "Politique de confidentialité générale RGPD"; // <-- change ici le nom du document
 
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege, downloadsDir) {
 
       // --- Texte ---
-const titre = 'Politique de confidentialité générale RGPD';
+const titre = nomFichier;
 const introduction = `
 Le présent document est établi au nom de la ${entreprise} sus nommée ${sigle}.
 	`;
