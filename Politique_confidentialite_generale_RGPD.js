@@ -197,7 +197,7 @@ Selon le droit applicable, vous disposez du droit de :
     const pageWidth = pdfDoc.page.width;
     const pageHeight = pdfDoc.page.height;
     pdfDoc.font("Calibri Bold").fontSize(32).fillColor("#ebc015").text(titre, pageWidth / 2 - 250, pageHeight / 2 - 100, { width: 500, align: "center" });
-    const logoPath = path.join("public", "images","logo_rgpd_trankility.png");
+    const logoPath = "public/images/logo_rgpd_trankility.png";
     if (fs.existsSync(logoPath)) {
       pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
     } else {
