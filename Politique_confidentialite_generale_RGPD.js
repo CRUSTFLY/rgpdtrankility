@@ -3,6 +3,7 @@ import PDFDocument from "pdfkit";
 import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumber } from "docx";
 import archiver from "archiver";
 import { PassThrough } from "stream";
+import fs from "fs";
 
 /**
  * Retourne { pdfBase64, docxBase64, zipBase64 }.
@@ -192,6 +193,24 @@ Selon le droit applicable, vous disposez du droit de :
     pdfStream.on("error", reject);
   });
   pdfDoc.pipe(pdfStream);
+  
+  		// Construire le chemin absolu vers le dossier fonts
+		const fontsDir = path.join("public", "fonts");
+
+		// Enregistrer les polices
+		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
+		pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
+		
+		  // ---- Nettoyage du texte ----
+		const clean = txt =>
+		(txt || "")
+		.replace(/[“”«»]/g, '"')
+		.replace(/[’‘]/g, "'")
+		.replace(/[–—]/g, "-")
+		.replace(/[•·‣◦▪]/g, "-")
+		.replace(/[^\x09\x0A\x0D\x20-\x7EÀ-ÿ€]/g, "") // supprime caractères invisibles
+		.trim();
+		
 		// === PAGE 1 : Page de garde ===
 		const pageWidth = pdfDoc.page.width;
 		const pageHeight = pdfDoc.page.height;
