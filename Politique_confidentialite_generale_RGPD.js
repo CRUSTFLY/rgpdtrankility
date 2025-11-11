@@ -12,8 +12,13 @@ import fs from "fs";
 // ===== Variable pour le nom du fichier =====
 const nomFichier = "Politique de confidentialité générale RGPD"; // <-- change ici le nom du document
 
-export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
-  try {
+export async function generateDocuments(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege, downloadsDir) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const baseName = `${nom}_${prenom}_${Date.now()}`;
+	  const pdfPath = path.join(downloadsDir, `${nomFichier}.pdf`);
+      const docxPath = path.join(downloadsDir, `${nomFichier}.docx`);
+      const zipPath = path.join(downloadsDir, `${nomFichier}.zip`);
 	
     const titre = nomFichier;
     const introduction = `
@@ -575,28 +580,31 @@ Selon le droit applicable, vous disposez du droit de :
     const docxBuffer = await Packer.toBuffer(doc);
     const docxBase64 = docxBuffer.toString("base64");
 
- // ===== ZIP =====
-    const zipChunks = [];
-    const zipStream = new PassThrough();
-    const archive = archiver("zip", { zlib: { level: 9 } });
-    archive.pipe(zipStream);
-    zipStream.on("data", chunk => zipChunks.push(chunk));
+      // --- Génération DOCX ---
+      const buffer = await Packer.toBuffer(doc);
+      fs.writeFileSync(docxPath, buffer);
+      console.log(`DOCX créé: ${docxPath}`);
 
-    archive.append(pdfBuffer, { name: "Politique_RGPD.pdf" });
-    archive.append(docxBuffer, { name: "Politique_RGPD.docx" });
+      // --- Création ZIP ---
+      await new Promise((resZip, rejZip) => {
+        const output = fs.createWriteStream(zipPath);
+        const archive = archiver("zip");
 
-    await archive.finalize();
-    await new Promise((resolve, reject) => {
-		zipStream.on("finish", resolve);
-		zipStream.on("error", reject);
-	});
+        output.on("close", () => {
+          console.log(`ZIP créé: ${zipPath} (${archive.pointer()} octets)`);
+          resZip();
+        });
+        archive.on("error", (err) => rejZip(err));
 
-    const zipBuffer = Buffer.concat(zipChunks);
-    const zipBase64 = zipBuffer.toString("base64");
-
-    return { pdfBase64, docxBase64, zipBase64 };
-  } catch (err) {
-    console.error("❌ Erreur complète lors de la génération RGPD :", err);
-    throw err; // laisse l'erreur originale pour voir la vraie cause
-  }
+        archive.pipe(output);
+        archive.file(pdfPath, { name: `${baseName}.pdf` });
+        archive.file(docxPath, { name: `${baseName}.docx` });
+        archive.finalize();
+      });
+      resolve({ pdfPath, docxPath, zipPath});
+    } catch (err) {
+      console.error("Erreur generateDocuments:", err);
+      reject(err);
+    }
+  });
 }
