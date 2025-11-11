@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import PDFDocument from "pdfkit";
-import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumber } from "docx";
+import { Document, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumber, Packer } from "docx";
 import archiver from "archiver";
 import express from "express";
 import { PassThrough } from "stream";
@@ -313,6 +313,9 @@ Selon le droit applicable, vous disposez du droit de :
   await pdfFinished;
   const pdfBuffer = Buffer.concat(pdfChunks);
   const pdfBase64 = pdfBuffer.toString("base64");
+  
+  // Fonction helper pour nettoyer le texte
+  const safeText = (txt) => (typeof txt === "string" ? txt.trim() : "");
 
   // --- DOCX ---
       const doc = new Document({
@@ -320,7 +323,7 @@ Selon le droit applicable, vous disposez du droit de :
 		    // --- PAGE DE GARDE ---
 		{
 			properties: {
-				page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } }, // marges normales
+				page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } }, 
 			},
       // --- Pied de page ---
       footers: {
@@ -335,7 +338,12 @@ Selon le droit applicable, vous disposez du droit de :
                   size: 18,
                   color: "A0A0A0",
                 }),
-                PageNumber.CURRENT, // ✅ directement ici
+                new TextRun({
+					children: [PageNumber.CURRENT],
+					font: "Calibri Light",
+					size: 18,
+					color: "A0A0A0",
+				}),
               ],
             }),
           ],
@@ -345,7 +353,7 @@ Selon le droit applicable, vous disposez du droit de :
 				new Paragraph({
 				children: [
 					new TextRun({
-					text: titre, // ton nom de document
+					text: safeText(titre), // ton nom de document
 					bold: true,
 					color: "ebc015",
 					size: 64,
@@ -375,48 +383,48 @@ Selon le droit applicable, vous disposez du droit de :
         {
             children: [
               new Paragraph({ text: "" }),
-              ...introduction
+              ...safeText(introduction)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 			
 			// Bloc 1	
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre1, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre1), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte1
+              ...safeText(texte1)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 
 			// Bloc 2	
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre2, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre2), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte2
+              ...safeText(texte2)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 			  new Paragraph({ text: "" }),
-              ...texte22
+              ...safeText(texte22)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light"})], indent: { left: 500 } })),
 				
 			// Bloc 3
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre3, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre3), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte3
+              ...safeText(texte3)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
@@ -433,18 +441,18 @@ Selon le droit applicable, vous disposez du droit de :
 				]
 			})),
 			  new Paragraph({ text: "" }),
-              ...texte32
+              ...safeText(texte32)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 			// Bloc 4
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre4, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre4), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte4
+              ...safeText(texte4)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
@@ -460,12 +468,12 @@ Selon le droit applicable, vous disposez du droit de :
 			})),			
 			// Bloc 5
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre5, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre5), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte5
+              ...safeText(texte5)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
@@ -481,24 +489,24 @@ Selon le droit applicable, vous disposez du droit de :
 			})),
 			// Bloc 6
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre6, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre6), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte6
+              ...safeText(texte6)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 			
 			// Bloc 7
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre7, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre7), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte7
+              ...safeText(texte7)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
@@ -513,79 +521,79 @@ Selon le droit applicable, vous disposez du droit de :
 				]
 			})),
 			new Paragraph({ text: "" }),
-              ...texte72
+              ...safeText(texte72)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 
 			// Bloc 8
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre8, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre8), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte8
+              ...safeText(texte8)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 				
 			// Bloc 9
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre9, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre9), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte9
+              ...safeText(texte9)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),				
 				
 			// Bloc 10
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre10, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre10), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte10
+              ...safeText(texte10)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),				
 				
 			// Bloc 11
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre11, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre11), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte11
+              ...safeText(texte11)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 				
 			// Bloc 12
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre12, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre12), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte12
+              ...safeText(texte12)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 				
 			// Bloc 13
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre13, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                children: [new TextRun({ text: safeText(soustitre13), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
                 alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
-              ...texte13
+              ...safeText(texte13)
                 .split("\n")
                 .filter(line => line.trim() !== "")
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),				
