@@ -172,7 +172,7 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
             const historyKey = `history_${currentUser.name}`;
             let history = JSON.parse(localStorage.getItem(historyKey)) || [];
             const date = new Date().toLocaleString();
-            history.push({date,fileName fileName, pdfUrl, docxUrl, zipUrl});
+            history.push({date, fileName, pdfUrl, docxUrl, zipUrl});
             localStorage.setItem(historyKey, JSON.stringify(history));
 
             msgDiv.innerHTML = `
