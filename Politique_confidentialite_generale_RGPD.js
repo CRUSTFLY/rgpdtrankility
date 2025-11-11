@@ -343,12 +343,12 @@ Selon le droit applicable, vous disposez du droit de :
 					new TextRun({
 					text: titre, // ton nom de document
 					bold: true,
-					color: "EBC015",
+					color: "ebc015",
 					size: 64,
 					font: "Calibri Bold",
 					}),
 				],
-				alignment: AlignmentType.CENTER,
+				alignment: "center",
 				spacing: { before: 5000, after: 1000 }, // centré verticalement
 				}),
 
@@ -363,7 +363,7 @@ Selon le droit applicable, vous disposez du droit de :
 					},
 					}),
 				],
-				alignment: AlignmentType.CENTER,
+				alignment: "center",
 				spacing: { after: 5000 },
 				}),
 			],
@@ -378,8 +378,8 @@ Selon le droit applicable, vous disposez du droit de :
 			
 			// Bloc 1	
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre1, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre1, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -390,8 +390,8 @@ Selon le droit applicable, vous disposez du droit de :
 
 			// Bloc 2	
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre2, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre2, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -407,8 +407,8 @@ Selon le droit applicable, vous disposez du droit de :
 				
 			// Bloc 3
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre3, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre3, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -435,8 +435,8 @@ Selon le droit applicable, vous disposez du droit de :
                 .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
 			// Bloc 4
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre4, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre4, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -456,8 +456,8 @@ Selon le droit applicable, vous disposez du droit de :
 			})),			
 			// Bloc 5
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre5, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre5, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -477,8 +477,8 @@ Selon le droit applicable, vous disposez du droit de :
 			})),
 			// Bloc 6
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre6, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre6, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -489,8 +489,8 @@ Selon le droit applicable, vous disposez du droit de :
 			
 			// Bloc 7
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre7, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre7, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -516,8 +516,8 @@ Selon le droit applicable, vous disposez du droit de :
 
 			// Bloc 8
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre8, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre8, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -528,8 +528,8 @@ Selon le droit applicable, vous disposez du droit de :
 				
 			// Bloc 9
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre9, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre9, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -540,8 +540,8 @@ Selon le droit applicable, vous disposez du droit de :
 				
 			// Bloc 10
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre10, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre10, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -552,8 +552,8 @@ Selon le droit applicable, vous disposez du droit de :
 				
 			// Bloc 11
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre11, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre11, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -564,8 +564,8 @@ Selon le droit applicable, vous disposez du droit de :
 				
 			// Bloc 12
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre12, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre12, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
@@ -576,8 +576,8 @@ Selon le droit applicable, vous disposez du droit de :
 				
 			// Bloc 13
 			  new Paragraph({
-                children: [new TextRun({ text: soustitre13, bold: true, color: "EBC015", size: 26, font: "Calibri Bold" })],
-                alignment: AlignmentType.LEFT,
+                children: [new TextRun({ text: soustitre13, bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
+                alignment: "left",
 				spacing: {before: 200,},
               }),
 			  new Paragraph({ text: "" }),
