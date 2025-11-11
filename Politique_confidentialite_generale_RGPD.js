@@ -344,6 +344,37 @@ const doc = new Document({
           ],
         }),
       },
+	  			children: [
+				new Paragraph({
+				children: [
+					new TextRun({
+					text: titre, // ton nom de document
+					bold: true,
+					color: "ebc015",
+					size: 64,
+					font: "Calibri Bold",
+					}),
+				],
+				alignment: "center",
+				spacing: { before: 5000, after: 1000 }, // centré verticalement
+				}),
+
+				// --- Logo au centre ---
+				new Paragraph({
+				children: [
+					new ImageRun({
+					data: fs.readFileSync("public/images/logo_rgpd_trankility.png"),
+					transformation: {
+						width: 200,
+						height: 200,
+					},
+					}),
+				],
+				alignment: "center",
+				spacing: { after: 5000 },
+				}),
+			],
+		
       children: [
         new Paragraph({ text: "" }),
 
