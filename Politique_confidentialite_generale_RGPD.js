@@ -1,7 +1,9 @@
-// Politique_confidentialite_generale_RGPD.js
+import fs from "fs";
+import path from "path";
 import PDFDocument from "pdfkit";
-import { Document, Packer, Paragraph, TextRun, AlignmentType } from "docx";
+import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumber } from "docx";
 import archiver from "archiver";
+import express from "express";
 import { PassThrough } from "stream";
 
 /**
