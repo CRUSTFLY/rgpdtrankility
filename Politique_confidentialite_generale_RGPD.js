@@ -429,6 +429,9 @@ const doc = new Document({
   ],
 });
 
+  const docxBuffer = await Packer.toBuffer(doc);
+  const docxBase64 = docxBuffer.toString("base64");
+
 // --- Sauvegarde du DOCX ---
 (async () => {
   try {
