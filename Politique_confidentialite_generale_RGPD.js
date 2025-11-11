@@ -10,7 +10,7 @@ import { PassThrough } from "stream";
  * Retourne { pdfBase64, docxBase64, zipBase64 }.
  */
 
-export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
+export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege, downloadsDir) {
 
       // --- Texte ---
 const titre = 'Politique de confidentialité générale RGPD';
