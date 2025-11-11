@@ -13,7 +13,7 @@ import { PassThrough } from "stream";
 // ===== Variable pour le nom du fichier =====
 const nomFichier = "Politique de confidentialité générale RGPD";
 
-export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege, downloadsDir) {
+export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
 
       // --- Texte ---
 const titre = 'Politique de confidentialité générale RGPD';
@@ -623,14 +623,10 @@ const doc = new Document({
 	  
   const docxBuffer = await Packer.toBuffer(doc);
   const docxBase64 = docxBuffer.toString("base64");
-  const pdfPath = path.join(downloadsDir, `${nomFichier}.pdf`);
-  const docxPath = path.join(downloadsDir, `${nomFichier}.docx`);
-  const zipPath = path.join(downloadsDir, `${nomFichier}.zip`);
 
   // --- Génération DOCX ---
   const buffer = await Packer.toBuffer(doc);   
-  fs.writeFileSync(docxPath, buffer);
-  console.log(`DOCX créé: ${docxPath}`);
+  fs.writeFileSync("Politique_de_confidentialité_RGPD.docx", buffer);
 
   // --- ZIP (archive en mémoire via archiver) ---
   const zipStream = new PassThrough();

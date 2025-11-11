@@ -19,9 +19,11 @@
 <main>
     <div class="menu">
         <button class="tab-btn active" data-tab="monCompte">Mon Compte</button>
+		<button class="tab-btn" data-tab="IARGPD">Assitant IA RGPD</button>
         <button class="tab-btn" data-tab="FormulaireRGPD">Formulaire RGPD</button>
         <button class="tab-btn" data-tab="RegenererUnDocument">Regénérer un document</button>
         <button class="tab-btn" data-tab="historiqueGeneration">Historique de génération</button>
+		<button class="tab-btn" data-tab="SuivideConformite">Suivi de conformité</button>
         <button class="tab-btn" data-tab="contactSupport">Contact & Support</button>
     </div>
 
@@ -30,6 +32,16 @@
         <section id="monCompte" class="active">
             <h2 id="welcomeMsg">Bienvenue sur votre compte</h2>
             <p>Gérez vos paramètres RGPD et consultez l’historique des consentements ici.</p>
+        </section>
+		
+		<!-- Assitant IA RGPD -->
+        <section id="IARGPD">
+            <h2>Formulaire RGPD</h2>
+            <div id="IARGPDContent"></div>
+			<input type="text" id="userInput" placeholder="Écris un message..." />
+			<button id="sendBtn">Envoyer</button>
+			<div id="response"></div>
+			<script src="iargpd.js"></script>
         </section>
 
         <!-- Formulaire RGPD -->
@@ -49,10 +61,10 @@
             <div id="regenResult"></div>
         </section>
 
-        <!-- Historique -->
-        <section id="historiqueGeneration">
-            <h2>Historique de génération</h2>
-            <div id="historyList"><p>Aucun document généré pour le moment.</p></div>
+        <!-- Suivi de conformité -->
+        <section id="SuivideConformite">
+            <h2>Suivi de conformité</h2>
+            <div id="SuivideConformiteContent"><p>A venir...</p></div>
         </section>
 
         <!-- Contact & Support -->
