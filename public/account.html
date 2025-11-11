@@ -121,9 +121,9 @@ function showHistory() {
 
         div.innerHTML = `
             <strong>Généré le :</strong> ${entry.date}<br>
-            <a href="${entry.pdfUrl}" download><button class="pdf">PDF</button></a>
-            <a href="${entry.docxUrl}" download><button class="word">Word</button></a>
-            <a href="${entry.zipUrl}" download><button class="zip">ZIP</button></a>
+            <a href="${entry.pdfUrl}" download><button class="btn-gendoc">PDF</button></a>
+            <a href="${entry.docxUrl}" download><button class="btn-gendoc">Word</button></a>
+            <a href="${entry.zipUrl}" download><button class="btn-gendoc">ZIP</button></a>
         `;
 
         const deleteBtn = document.createElement('button');
@@ -213,9 +213,9 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
 
             msgDiv.innerHTML = `
                 ✅ Document généré !<br>
-                <a href="${pdfUrl}" download="Politique_RGPD.pdf">PDF</a> |
-                <a href="${docxUrl}" download="Politique_RGPD.docx">Word</a> |
-                <a href="${zipUrl}" download="Politique_RGPD.zip">ZIP</a>
+                <a href="${pdfUrl}" download="${docSelect}_${Date.now()}.pdf">PDF</a> |
+                <a href="${docxUrl}" download="${docSelect}_${Date.now()}.docx">Word</a> |
+                <a href="${zipUrl}" download="${docSelect}_${Date.now()}.zip">ZIP</a>
             `;
         } else {
             msgDiv.textContent = "❌ "+data.error;
