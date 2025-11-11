@@ -344,8 +344,6 @@ const doc = new Document({
           ],
         }),
       },
-	},
-	{
       children: [
         new Paragraph({ text: "" }),
 
