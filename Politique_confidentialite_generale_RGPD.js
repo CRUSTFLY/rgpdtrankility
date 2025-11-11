@@ -323,73 +323,7 @@ Selon le droit applicable, vous disposez du droit de :
 // --- Création du document ---
 const doc = new Document({
   sections: [
-    // --- PAGE DE GARDE ---
-    {
-      properties: {
-        page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } },
-      },
-      footers: {
-        default: new Footer({
-          children: [
-            new Paragraph({
-              alignment: AlignmentType.RIGHT,
-              children: [
-                new TextRun({
-                  text: "Page ",
-                  font: "Calibri Light",
-                  size: 18,
-                  color: "A0A0A0",
-                }),
-                new TextRun({
-                  children: [PageNumber.CURRENT],
-                  font: "Calibri Light",
-                  size: 18,
-                  color: "A0A0A0",
-                }),
-              ],
-            }),
-          ],
-        }),
-      },
-      children: [
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          children: [
-            new TextRun({
-              text: safeText(titre),
-              bold: true,
-              color: "EBC015",
-              size: 64,
-              font: "Calibri Bold",
-            }),
-          ],
-          spacing: { before: 5000, after: 1000 },
-        }),
 
-        fs.existsSync(logoPath)
-          ? new Paragraph({
-              alignment: AlignmentType.CENTER,
-              children: [
-                new ImageRun({
-                  data: fs.readFileSync(logoPath),
-                  transformation: { width: 180, height: 180 },
-                }),
-              ],
-              spacing: { after: 5000 },
-            })
-          : new Paragraph({
-              alignment: AlignmentType.CENTER,
-              children: [
-                new TextRun({
-                  text: "(logo introuvable)",
-                  italics: true,
-                  color: "888888",
-                  size: 22,
-                }),
-              ],
-            }),
-      ],
-    },
 
     // --- CONTENU ---
     {
