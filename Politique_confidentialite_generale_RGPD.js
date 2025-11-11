@@ -622,7 +622,7 @@ const doc = new Document({
   const docxBase64 = docxBuffer.toString("base64");
 
   // --- Génération DOCX ---
-  const buffer = await Packer.toBuffer(wordDoc);   
+  const buffer = await Packer.toBuffer(doc);   
   fs.writeFileSync(docxPath, buffer);
   console.log(`DOCX créé: ${docxPath}`);
 
