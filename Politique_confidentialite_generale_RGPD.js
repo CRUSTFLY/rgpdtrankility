@@ -13,65 +13,53 @@ import fs from "fs";
 const nomFichier = "Politique de confidentialité générale RGPD"; // <-- change ici le nom du document
 
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
-
-	const titre = nomFichier;
+  try {
+    const titre = nomFichier;
     const introduction = `
 Le présent document est établi au nom de la ${entreprise} sus nommée ${sigle}.
-	`;
-    const soustitre1  = `
-1. Politique de confidentialité
-	`;
+    `;
+    const soustitre1  = `1. Politique de confidentialité`;
     const texte1  = `
-${entreprise} s’engage fermement à protéger votre sphère privée.\n
+${entreprise} s’engage fermement à protéger votre sphère privée.
 La présente politique de confidentialité (la Politique) s’applique au traitement de vos données personnelles en relation avec l’utilisation de nos services et à l’exécution de nos prestations.
-	`;
-	 
-    const soustitre2  = `
-2. Qui sommes-nous ?
-	`;
+    `;
+    const soustitre2  = `2. Qui sommes-nous ?`;
     const texte2  = `
-Le responsable du traitement est l’entreprise qui détermine lesquelles de vos données personnelles sont traitées, à quelles fins et de quelle manière. En ce qui concerne le traitement de vos données personnelles en vertu de la présente Politique, nous agissons en tant que responsable du traitement et sommes donc responsables du traitement connexe, y compris de vos données personnelles.\n
+Le responsable du traitement est l’entreprise qui détermine lesquelles de vos données personnelles sont traitées, à quelles fins et de quelle manière. En ce qui concerne le traitement de vos données personnelles en vertu de la présente Politique, nous agissons en tant que responsable du traitement et sommes donc responsables du traitement connexe, y compris de vos données personnelles.
 En cas de questions concernant la présente Politique ou tout autre problème lié à la protection des données, vous pouvez nous contacter aux coordonnées ci-dessous :
-	`;
+    `;
     const texte22  = `
 ${entreprise}
 ${adressesiege}
 ${cpsiege} ${villesiege}
 Par téléphone : ${numtelsiege}
 Par email : dpo@neosys-info.fr
-	`;	 
-
-    const soustitre3  = `
-3. Les données personnelles que nous traitons
-	`;
-    const texte3  = `
-${entreprise} peut traiter les données personnelles suivantes, vous concernant :
-	`;	
-
+    `;
+    const soustitre3  = `3. Les données personnelles que nous traitons`;
+    const texte3  = `${entreprise} peut traiter les données personnelles suivantes, vous concernant :`;
     const puces3 = [
-        "Données à caractère personnel courantes",
-        "RH : vie personnelle (situation familiale, identité ayants-droits mutuelle …)",
-        "RH : vie professionnelle (CV, scolarité formation professionnelle, distinctions …)",
-        "RH : informations d’ordre économique et financier (revenus, situation financière, situation fiscale …)",
-		"RH : Données de connexion (identifiants / mot de passe, adresses IP, journaux d’événements …)",
-		"RH : données de gestion des déplacements : permis conduire",
-		"Données fournisseurs : nom contact, email, téléphone",
-		"Données « patients » : NIR, nom, prénom, adresse, contact de confiance, sexe, date naissance, n° téléphone, coordonnées AMELI / mutuelle / ayants-droits",
-		"Données « Familles, enfants » : nom, prénom, photo (pas obligatoire), livret de famille, certificat médical et de vaccination, email, tél., RIB, revenus, n° NIR, n° CAF (CAFPRO et aides), avis imposition, entreprise et profession (Ville de PAU, TEREGA, TOTAL, Hôpital de Pau)",
-		"Données à caractère personnel perçues comme sensibles",
-		"Numéro de sécurité sociale (NIR)",
-		"Données bancaires (RIB)",
-		"Données médicales dans le cadre de certains examens dentaires",
-		"Données personnes protégées : prisonniers, demandeurs d’asile, handicapé, tutelles",
-		"Nationalité : expatriés, réfugiés",
-      ];
-	
-    const texte32 = `	  
-Des données concernant des enfants sont traités, dans le cadre de la « Petite Enfance » (identité, photo, date naissance, carnet vaccinations …).\n
-Ces données peuvent également comprendre des données sensibles, c’est-à-dire des données qui demandent une protection plus élevée. Nous ne traitons pas ces informations, sauf si vous y consentez au préalable.\n
-Vous n’êtes pas obligé de nous fournir ces informations. Toutefois, veuillez noter que si vous ne souhaitez pas partager ces données avec nous, vous ne pourrez possiblement pas utiliser l’ensemble de nos services.\n
-De façon générale, nous recueillons ces informations directement auprès de vous. Cependant, nous pouvons également recueillir de temps à autre vos données personnelles à partir d’autres sources, par exemple pour maintenir vos informations à jour en utilisant des sources accessibles au public. Nous avons besoin de vos données personnelles uniquement dans le cadre de la bonne exécution de nos prestations. \n
-Par ailleurs, si vous nous fournissez des données personnelles par l’intermédiaire d’un tiers, nous nous appuyons sur la légalité de cette divulgation et vous demandons de vous assurer que vous êtes autorisé à partager ces informations avec nous.\n
+      "Données à caractère personnel courantes",
+      "RH : vie personnelle (situation familiale, identité ayants-droits mutuelle …)",
+      "RH : vie professionnelle (CV, scolarité formation professionnelle, distinctions …)",
+      "RH : informations d’ordre économique et financier (revenus, situation financière, situation fiscale …)",
+      "RH : Données de connexion (identifiants / mot de passe, adresses IP, journaux d’événements …)",
+      "RH : données de gestion des déplacements : permis conduire",
+      "Données fournisseurs : nom contact, email, téléphone",
+      "Données « patients » : NIR, nom, prénom, adresse, contact de confiance, sexe, date naissance, n° téléphone, coordonnées AMELI / mutuelle / ayants-droits",
+      "Données « Familles, enfants » : nom, prénom, photo (pas obligatoire), livret de famille, certificat médical et de vaccination, email, tél., RIB, revenus, n° NIR, n° CAF (CAFPRO et aides), avis imposition, entreprise et profession (Ville de PAU, TEREGA, TOTAL, Hôpital de Pau)",
+      "Données à caractère personnel perçues comme sensibles",
+      "Numéro de sécurité sociale (NIR)",
+      "Données bancaires (RIB)",
+      "Données médicales dans le cadre de certains examens dentaires",
+      "Données personnes protégées : prisonniers, demandeurs d’asile, handicapé, tutelles",
+      "Nationalité : expatriés, réfugiés",
+    ];
+    const texte32 = `
+Des données concernant des enfants sont traités, dans le cadre de la « Petite Enfance » (identité, photo, date naissance, carnet vaccinations …).
+Ces données peuvent également comprendre des données sensibles, c’est-à-dire des données qui demandent une protection plus élevée. Nous ne traitons pas ces informations, sauf si vous y consentez au préalable.
+Vous n’êtes pas obligé de nous fournir ces informations. Toutefois, veuillez noter que si vous ne souhaitez pas partager ces données avec nous, vous ne pourrez possiblement pas utiliser l’ensemble de nos services.
+De façon générale, nous recueillons ces informations directement auprès de vous. Cependant, nous pouvons également recueillir de temps à autre vos données personnelles à partir d’autres sources, par exemple pour maintenir vos informations à jour en utilisant des sources accessibles au public. Nous avons besoin de vos données personnelles uniquement dans le cadre de la bonne exécution de nos prestations.
+Par ailleurs, si vous nous fournissez des données personnelles par l’intermédiaire d’un tiers, nous nous appuyons sur la légalité de cette divulgation et vous demandons de vous assurer que vous êtes autorisé à partager ces informations avec nous.
 De plus, ${entreprise} vise à assurer que vos données personnelles sont exactes, complètes et actuelles, mais nous nous attendons à ce que vous mettiez à jour ou corrigiez vos informations personnelles chaque fois qu’il s’avère nécessaire.
 `;
 
@@ -183,61 +171,42 @@ Selon le droit applicable, vous disposez du droit de :
         "Formuler une réclamation auprès de la CNIL dont le site internet est accessible à l’adresse suivante www.cnil.fr et le siège est situé 3 Place de Fontenoy – TSA 80715 - 75334 Paris Cedex 07",
       ];
 
-  // --- Génération PDF dans un buffer ---
-  const pdfDoc = new PDFDocument({ margin: 50 });
-  const pdfStream = new PassThrough();
-  const pdfChunks = [];
-  pdfStream.on("data", chunk => pdfChunks.push(chunk));
-  const pdfFinished = new Promise((resolve, reject) => {
-    pdfStream.on("end", resolve);
-    pdfStream.on("error", reject);
-  });
-  pdfDoc.pipe(pdfStream);
-  
-  		// Construire le chemin absolu vers le dossier fonts
-		const fontsDir = path.join("public", "fonts");
+    // --- Génération PDF ---
+    const pdfDoc = new PDFDocument({ margin: 50 });
+    const pdfStream = new PassThrough();
+    const pdfChunks = [];
+    pdfStream.on("data", chunk => pdfChunks.push(chunk));
+    const pdfFinished = new Promise((resolve, reject) => {
+      pdfStream.on("end", resolve);
+      pdfStream.on("error", reject);
+    });
+    pdfDoc.pipe(pdfStream);
 
-		// Enregistrer les polices
-		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
-		pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
-		
-		  // ---- Nettoyage du texte ----
-		const clean = txt =>
-		(txt || "")
-		.replace(/[“”«»]/g, '"')
-		.replace(/[’‘]/g, "'")
-		.replace(/[–—]/g, "-")
-		.replace(/[•·‣◦▪]/g, "-")
-		.replace(/[^\x09\x0A\x0D\x20-\x7EÀ-ÿ€]/g, "") // supprime caractères invisibles
-		.trim();
-		
-		// === PAGE 1 : Page de garde ===
-		const pageWidth = pdfDoc.page.width;
-		const pageHeight = pdfDoc.page.height;
+    // Polices
+    const fontsDir = path.join("public", "fonts");
+    if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
+    if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
 
-		// Titre centré verticalement
-		pdfDoc
-			.font("Calibri Bold")
-			.fontSize(32)
-			.fillColor("#ebc015")
-			.text(titre, pageWidth / 2 - 250, pageHeight / 2 - 100, {
-				width: 500,
-				align: "center",
-			});
+    const clean = txt =>
+      (txt || "")
+        .replace(/[“”«»]/g, '"')
+        .replace(/[’‘]/g, "'")
+        .replace(/[–—]/g, "-")
+        .replace(/[•·‣◦▪]/g, "-")
+        .replace(/[^\x09\x0A\x0D\x20-\x7EÀ-ÿ€]/g, "")
+        .trim();
 
-		// Logo centré sous le titre
-		const logoPath = "public/images/logo_rgpd_trankility.png";
-		if (fs.existsSync(logoPath)) {
-			pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
-		} else {
-			console.warn("⚠️ Logo introuvable :", logoPath);
-		}
-
-		// === PAGE 2 : Contenu principal ===
-		pdfDoc.addPage();
-		
-		//drawHeader();
-		//pdfDoc.on("pageAdded", drawHeader);
+    // PAGE DE GARDE
+    const pageWidth = pdfDoc.page.width;
+    const pageHeight = pdfDoc.page.height;
+    pdfDoc.font("Calibri Bold").fontSize(32).fillColor("#ebc015").text(titre, pageWidth / 2 - 250, pageHeight / 2 - 100, { width: 500, align: "center" });
+    const logoPath = "public/images/logo_rgpd_trankility.png";
+    if (fs.existsSync(logoPath)) {
+      pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
+    } else {
+      console.warn("⚠️ Logo introuvable :", logoPath);
+    }
+    pdfDoc.addPage();
 
 		// ---- Introduction ----
 		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(introduction), { align: "justify"}).moveDown(1);
@@ -301,16 +270,15 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre13), { align: "left"}).moveDown(1);
 		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte13)).moveDown(1);
 		puces13.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
+		
+    pdfDoc.end();
+    await pdfFinished;
+    const pdfBuffer = Buffer.concat(pdfChunks);
+    const pdfBase64 = pdfBuffer.toString("base64");
 
-		pdfDoc.end();
-		});
-  await pdfFinished;
-  const pdfBuffer = Buffer.concat(pdfChunks);
-  const pdfBase64 = pdfBuffer.toString("base64");
-
-  // --- DOCX ---
-  const doc = new Document({
-       sections: [
+      // ===== DOCX =====
+      const doc = new Document({
+        sections: [
 		    // --- PAGE DE GARDE ---
 		{
 			properties: {
@@ -601,28 +569,27 @@ Selon le droit applicable, vous disposez du droit de :
             ],
           },
         ],
-    }]
-  });
-  const docxBuffer = await Packer.toBuffer(doc);
-  const docxBase64 = docxBuffer.toString("base64");
+      });
+    const docxBuffer = await Packer.toBuffer(doc);
+    const docxBase64 = docxBuffer.toString("base64");
 
-  // --- ZIP (archive en mémoire via archiver) ---
-  const zipStream = new PassThrough();
-  const zipChunks = [];
-  zipStream.on("data", c => zipChunks.push(c));
-  const zipFinished = new Promise((resolve, reject) => {
-    zipStream.on("end", resolve);
-    zipStream.on("error", reject);
-  });
+    // --- ZIP ---
+    const zipStream = new PassThrough();
+    const zipChunks = [];
+    zipStream.on("data", c => zipChunks.push(c));
+    const zipFinished = new Promise((resolve, reject) => { zipStream.on("end", resolve); zipStream.on("error", reject); });
+    const archive = archiver("zip", { zlib: { level: 9 } });
+    archive.pipe(zipStream);
+    archive.append(pdfBuffer, { name: "Politique_RGPD.pdf" });
+    archive.append(docxBuffer, { name: "Politique_RGPD.docx" });
+    await archive.finalize();
+    await zipFinished;
+    const zipBuffer = Buffer.concat(zipChunks);
+    const zipBase64 = zipBuffer.toString("base64");
 
-  const archive = archiver("zip", { zlib: { level: 9 } });
-  archive.pipe(zipStream);
-  archive.append(pdfBuffer, { name: "Politique_RGPD.pdf" });
-  archive.append(docxBuffer, { name: "Politique_RGPD.docx" });
-  await archive.finalize();
-  await zipFinished;
-  const zipBuffer = Buffer.concat(zipChunks);
-  const zipBase64 = zipBuffer.toString("base64");
-
-  return { pdfBase64, docxBase64, zipBase64 };
+    return { pdfBase64, docxBase64, zipBase64 };
+  } catch (err) {
+    console.error("Erreur lors de la génération RGPD :", err);
+    throw new Error("Erreur réseau ou serveur");
+  }
 }
