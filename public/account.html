@@ -80,6 +80,10 @@
 </footer>
 
 <script>
+const docSelect = document.getElementById("docSelect");
+const documentType = docSelect.value;
+const fileName = `${documentType.replace(/\s+/g, "_")}_${Date.now()}`;
+			
 /* --- Gestion utilisateur et onglets --- */
 const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 if(currentUser) {
@@ -121,6 +125,7 @@ function showHistory() {
 
         div.innerHTML = `
             <strong>Généré le :</strong> ${entry.date}<br>
+			<strong>Nom :</strong> ${fileName}<br>
             <a href="${entry.pdfUrl}" download><button class="btn-gendoc">PDF</button></a>
             <a href="${entry.docxUrl}" download><button class="btn-gendoc">Word</button></a>
             <a href="${entry.zipUrl}" download><button class="btn-gendoc">ZIP</button></a>
