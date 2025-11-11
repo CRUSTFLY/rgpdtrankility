@@ -621,16 +621,10 @@ const doc = new Document({
   const docxBuffer = await Packer.toBuffer(doc);
   const docxBase64 = docxBuffer.toString("base64");
 
-// --- Sauvegarde du DOCX ---
-(async () => {
-  try {
-    const buffer = await Packer.toBuffer(doc);
-    fs.writeFileSync("output.docx", buffer);
-    console.log("✅ Fichier DOCX généré sans erreur !");
-  } catch (err) {
-    console.error("❌ Erreur lors de la génération :", err);
-  }
-})();
+  // --- Génération DOCX ---
+  const buffer = await Packer.toBuffer(wordDoc);   
+  fs.writeFileSync(docxPath, buffer);
+  console.log(`DOCX créé: ${docxPath}`);
 
   // --- ZIP (archive en mémoire via archiver) ---
   const zipStream = new PassThrough();
