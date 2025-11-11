@@ -196,9 +196,6 @@ Selon le droit applicable, vous disposez du droit de :
     pdfDoc.pipe(pdfStream);
     pdfStream.on("data", chunk => pdfChunks.push(chunk));
 
-    if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
-    if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
-
     // PAGE DE GARDE
     pdfDoc.font("Calibri Bold").fontSize(32).fillColor("#ebc015").text(titre, { align: "center" });
     if (fs.existsSync(logoPath)) {
