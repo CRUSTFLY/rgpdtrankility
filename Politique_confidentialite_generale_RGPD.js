@@ -360,18 +360,18 @@ const doc = new Document({
 		
 		
 				// --- Logo au centre ---
-		new Paragraph({
-		children: [
-			new ImageRun({
-			data: fs.readFileSync(path.resolve(logoPath)),
-			transformation: {
-				width: 200,
-				height: 200,
-			},
-			}),
-		],
-			alignment: "center",
-			spacing: { after: 5000 },
+				new Paragraph({
+				children: [
+					new ImageRun({
+					data: fs.readFileSync("public/images/logo_rgpd_trankility.png"),
+					transformation: {
+						width: 200,
+						height: 200,
+					},
+					}),
+				],
+				alignment: "center",
+				spacing: { after: 5000 },
 		}),
 
 		
