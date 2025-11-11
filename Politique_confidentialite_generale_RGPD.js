@@ -322,7 +322,8 @@ Selon le droit applicable, vous disposez du droit de :
 			properties: {
 				page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } }, // marges normales
 			},
-			footers: {
+      // --- Pied de page ---
+      footers: {
         default: new Footer({
           children: [
             new Paragraph({
@@ -334,11 +335,12 @@ Selon le droit applicable, vous disposez du droit de :
                   size: 18,
                   color: "A0A0A0",
                 }),
-				],
-			}),
-		],
-		}),
-		},
+                PageNumber.CURRENT, // ✅ directement ici
+              ],
+            }),
+          ],
+        }),
+      },
 			children: [
 				new Paragraph({
 				children: [
