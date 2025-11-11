@@ -623,9 +623,9 @@ const doc = new Document({
 	  
   const docxBuffer = await Packer.toBuffer(doc);
   const docxBase64 = docxBuffer.toString("base64");
-  const pdfPath = path.join(downloadsDir, `${nomFichier}.pdf`);
-  const docxPath = path.join(downloadsDir, `${nomFichier}.docx`);
-  const zipPath = path.join(downloadsDir, `${nomFichier}.zip`);
+  const pdfPath = path.join(downloadsDir, `Politique de confidentialité générale RGPD.pdf`);
+  const docxPath = path.join(downloadsDir, `Politique de confidentialité générale RGPD.docx`);
+  const zipPath = path.join(downloadsDir, `Politique de confidentialité générale RGPD.zip`);
 
   // --- Génération DOCX ---
   const buffer = await Packer.toBuffer(doc);   
