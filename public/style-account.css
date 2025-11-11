@@ -555,15 +555,16 @@ footer {
 
 /* ===== BOUTON GENERATEUR DE DOCUMENTS ===== */
 .btn-gendoc {
-    display: inline-block;
-    background-color: #000000; /* fond noir */
-    color: #ebc015;            /* texte doré */
-    padding: 1rem 2.5rem;      /* taille du bouton */
-    border-radius: 10px;       /* coins arrondis */
+    align-self: center;
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
     font-weight: 600;
-    text-decoration: none;
-    border: 2px solid #000000; /* bordure noire */
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .btn-gendoc:hover {
