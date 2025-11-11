@@ -314,18 +314,22 @@ Selon le droit applicable, vous disposez du droit de :
   const pdfBuffer = Buffer.concat(pdfChunks);
   const pdfBase64 = pdfBuffer.toString("base64");
   
+  // DOCX
   // Fonction helper pour nettoyer le texte
   const safeText = (txt) => (typeof txt === "string" ? txt.trim() : "");
 
-  // --- DOCX ---
-      const doc = new Document({
-        sections: [
-		    // --- PAGE DE GARDE ---
-		{
-			properties: {
-				page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } }, 
-			},
-      // --- Pied de page ---
+  // Nettoyage de texte
+  const safeText = (txt) =>
+  typeof txt === "string" ? txt.replace(/\r?\n|\r/g, " ").trim() : "";
+
+// --- Création du document ---
+const doc = new Document({
+  sections: [
+    // --- PAGE DE GARDE ---
+    {
+      properties: {
+        page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } },
+      },
       footers: {
         default: new Footer({
           children: [
@@ -339,281 +343,104 @@ Selon le droit applicable, vous disposez du droit de :
                   color: "A0A0A0",
                 }),
                 new TextRun({
-					children: [PageNumber.CURRENT],
-					font: "Calibri Light",
-					size: 18,
-					color: "A0A0A0",
-				}),
+                  children: [PageNumber.CURRENT],
+                  font: "Calibri Light",
+                  size: 18,
+                  color: "A0A0A0",
+                }),
               ],
             }),
           ],
         }),
       },
-			children: [
-				new Paragraph({
-				children: [
-					new TextRun({
-					text: safeText(titre), // ton nom de document
-					bold: true,
-					color: "ebc015",
-					size: 64,
-					font: "Calibri Bold",
-					}),
-				],
-				alignment: "center",
-				spacing: { before: 5000, after: 1000 }, // centré verticalement
-				}),
+      children: [
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [
+            new TextRun({
+              text: safeText(titre),
+              bold: true,
+              color: "EBC015",
+              size: 64,
+              font: "Calibri Bold",
+            }),
+          ],
+          spacing: { before: 5000, after: 1000 },
+        }),
 
-				// --- Logo au centre ---
-				new Paragraph({
-				children: [
-					new ImageRun({
-					data: fs.readFileSync("public/images/logo_rgpd_trankility.png"),
-					transformation: {
-						width: 200,
-						height: 200,
-					},
-					}),
-				],
-				alignment: "center",
-				spacing: { after: 5000 },
-				}),
-			],
-		},
-        {
-            children: [
-              new Paragraph({ text: "" }),
-              ...safeText(introduction)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-			
-			// Bloc 1	
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre1), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte1)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
+        logoExists
+          ? new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new ImageRun({
+                  data: fs.readFileSync(logoPath),
+                  transformation: { width: 180, height: 180 },
+                }),
+              ],
+              spacing: { after: 5000 },
+            })
+          : new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: "(logo introuvable)",
+                  italics: true,
+                  color: "888888",
+                  size: 22,
+                }),
+              ],
+            }),
+      ],
+    },
 
-			// Bloc 2	
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre2), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte2)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte22)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light"})], indent: { left: 500 } })),
-				
-			// Bloc 3
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre3), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte3)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
+    // --- CONTENU ---
+    {
+      children: [
+        new Paragraph({ text: "" }),
 
-			// Puces
-				...puces3.map(point => new Paragraph({
-				bullet: { level: 0 },
-				children: [
-					new TextRun({
-						text: point,
-						font: "Calibri Light",
-						size: 22,
-					})
-				]
-			})),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte32)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-			// Bloc 4
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre4), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
+        // Exemple introduction
+        ...(safeText(introduction)
+          ? safeText(introduction)
+              .split(". ")
+              .map(
+                (sentence) =>
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: sentence.trim() + ".",
+                        font: "Calibri Light",
+                        size: 22,
+                      }),
+                    ],
+                    spacing: { after: 200 },
+                  })
+              )
+          : [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "(Aucun texte d’introduction fourni)",
+                    italics: true,
+                    color: "888888",
+                  }),
+                ],
               }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte4)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-			...puces4.map(point => new Paragraph({
-				bullet: { level: 0 },
-				children: [
-					new TextRun({
-						text: point,
-						font: "Calibri Light",
-						size: 22,
-					})
-				]
-			})),			
-			// Bloc 5
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre5), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte5)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-			...puces5.map(point => new Paragraph({
-				bullet: { level: 0 },
-				children: [
-					new TextRun({
-						text: point,
-						font: "Calibri Light",
-						size: 22,
-					})
-				]
-			})),
-			// Bloc 6
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre6), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte6)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-			
-			// Bloc 7
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre7), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte7)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-			...puces7.map(point => new Paragraph({
-				bullet: { level: 0 },
-				children: [
-					new TextRun({
-						text: point,
-						font: "Calibri Light",
-						size: 22,
-					})
-				]
-			})),
-			new Paragraph({ text: "" }),
-              ...safeText(texte72)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
+            ]),
+      ],
+    },
+  ],
+});
 
-			// Bloc 8
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre8), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte8)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-				
-			// Bloc 9
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre9), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte9)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),				
-				
-			// Bloc 10
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre10), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte10)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),				
-				
-			// Bloc 11
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre11), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte11)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-				
-			// Bloc 12
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre12), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte12)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),
-				
-			// Bloc 13
-			  new Paragraph({
-                children: [new TextRun({ text: safeText(soustitre13), bold: true, color: "ebc015", size: 26, font: "Calibri Bold" })],
-                alignment: "left",
-				spacing: {before: 200,},
-              }),
-			  new Paragraph({ text: "" }),
-              ...safeText(texte13)
-                .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => new Paragraph({ children: [new TextRun({ text: line, size: 22, font: "Calibri Light" })] })),				
-			...puces13.map(point => new Paragraph({
-				bullet: { level: 0 },
-				children: [
-					new TextRun({
-						text: point,
-						font: "Calibri Light",
-						size: 22,
-					})			
-			]
-			})),
-            ],
-          },
-        ],
-      });
-	  
-  const docxBuffer = await Packer.toBuffer(doc);
-  const docxBase64 = docxBuffer.toString("base64");
+// --- Sauvegarde du DOCX ---
+(async () => {
+  try {
+    const buffer = await Packer.toBuffer(doc);
+    fs.writeFileSync("output.docx", buffer);
+    console.log("✅ Fichier DOCX généré sans erreur !");
+  } catch (err) {
+    console.error("❌ Erreur lors de la génération :", err);
+  }
+})();
 
   // --- ZIP (archive en mémoire via archiver) ---
   const zipStream = new PassThrough();
@@ -626,8 +453,8 @@ Selon le droit applicable, vous disposez du droit de :
 
   const archive = archiver("zip", { zlib: { level: 9 } });
   archive.pipe(zipStream);
-  archive.append(pdfBuffer, { name: "Politique_RGPD.pdf" });
-  archive.append(docxBuffer, { name: "Politique_RGPD.docx" });
+  archive.append(pdfBuffer, { name: "Politique_de_confidentialité_RGPD.pdf" });
+  archive.append(docxBuffer, { name: "Politique_de_confidentialité_RGPD.docx" });
   await archive.finalize();
   await zipFinished;
   const zipBuffer = Buffer.concat(zipChunks);
