@@ -363,7 +363,7 @@ const doc = new Document({
 			new Paragraph({
 			children: [
 				new ImageRun({
-				data: fs.readFileSync("public/images/logo_rgpd_trankility.png"),
+				data: fs.readFileSync(path.resolve("public/images/logo_rgpd_trankility.png")),
 				transformation: {
 					width: 200,
 					height: 200,
@@ -374,8 +374,8 @@ const doc = new Document({
 			spacing: { after: 5000 },
 		}),
 		],
-		},
-        {
+	},
+	{		
       children: [
         new Paragraph({ text: "" }),
 
