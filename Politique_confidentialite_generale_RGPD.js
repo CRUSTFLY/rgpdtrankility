@@ -15,8 +15,8 @@ const nomFichier = "Politique de confidentialité générale RGPD"; // <-- chang
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
   try {
     // ===== Paths =====
-    const fontsDir = path.resolve("./public/fonts");
-    const logoPath = path.resolve("./public/images/logo_rgpd_trankility.png");
+    const fontsDir = path.join("public", "fonts");
+    const fontsDir = path.join("public", "fonts","logo_rgpd_trankility.png");
 	
     const titre = nomFichier;
     const introduction = `
