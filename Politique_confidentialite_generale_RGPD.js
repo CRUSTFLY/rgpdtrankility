@@ -9,14 +9,11 @@ import { PassThrough } from "stream";
 /**
  * Retourne { pdfBase64, docxBase64, zipBase64 }.
  */
- 
-// ===== Variable pour le nom du fichier =====
-const nomFichier = "Politique de confidentialité générale RGPD"; // <-- change ici le nom du document
 
 export async function generateRGPD(nom, prenom, entreprise, sigle, adressesiege, cpsiege, villesiege, numtelsiege) {
 
       // --- Texte ---
-const titre = nomFichier;
+const titre = 'Politique de confidentialité générale RGPD';
 const introduction = `
 Le présent document est établi au nom de la ${entreprise} sus nommée ${sigle}.
 	`;
@@ -344,6 +341,10 @@ const doc = new Document({
           ],
         }),
       },
+	  
+	  
+	  
+	  
 	  children: [
 		new Paragraph({
 		children: [
@@ -358,22 +359,11 @@ const doc = new Document({
 		alignment: "center",
 		spacing: { before: 5000, after: 1000 }, // centré verticalement
 		}),
-
-		// --- Logo au centre ---
-			new Paragraph({
-			children: [
-				new ImageRun({
-				data: fs.readFileSync(path.resolve("public/images/logo_rgpd_trankility.png")),
-				transformation: {
-					width: 200,
-					height: 200,
-				},
-				}),
-			],
-			alignment: "center",
-			spacing: { after: 5000 },
-		}),
 		],
+		
+		
+		
+		
 	},
 	{		
       children: [
