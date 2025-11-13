@@ -35,8 +35,8 @@
         </section>
 		
 		<!-- Assitant IA RGPD -->
-        <section id="IARGPD">		
-            <h2>Assitant IA RGPD</h2>			  
+        <section id="IARGPD">
+            <h2>Assitant IA RGPD</h2>
 			<input type="text" id="userInput" placeholder="Écris un message..." />
 			<button id="sendBtn">Envoyer</button>
 			<div id="response"></div>
@@ -59,13 +59,13 @@
             <button id="generateBtn">Générer</button>
             <div id="regenResult"></div>
         </section>
-
+		
 		<!-- Historique --> 
 		<section id="historiqueGeneration"> 
 			<h2>Historique de génération</h2> 
 			<div id="historyList"><p>Aucun document généré pour le moment.</p></div> 
 		</section>
-		
+
         <!-- Suivi de conformité -->
         <section id="SuivideConformite">
             <h2>Suivi de conformité</h2>
@@ -230,18 +230,45 @@ function showHistory() {
         const div = document.createElement('div');
         div.classList.add('history-item');
 
+      // Création dynamique des boutons
+        const fileName = entry.fileName || "document";
+
         div.innerHTML = `
-			<strong>Nom :</strong> ${entry.fileName || "Inconnu"}<br>
+            <strong>Nom :</strong> ${fileName}<br>
             <strong>Généré le :</strong> ${entry.date}<br>
-            <a href="${entry.pdfUrl}" download><button class="pdf">PDF</button></a>
-            <a href="${entry.docxUrl}" download><button class="word">Word</button></a>
-            <a href="${entry.zipUrl}" download><button class="zip">ZIP</button></a>
         `;
 
+        // Bouton PDF avec nom personnalisé
+        const pdfBtn = document.createElement('a');
+        pdfBtn.href = entry.pdfUrl;
+        pdfBtn.download = `${fileName}.pdf`;
+        pdfBtn.innerHTML = `<button class="pdf">PDF</button>`;
+
+        // Bouton Word
+        const docxBtn = document.createElement('a');
+        docxBtn.href = entry.docxUrl;
+        docxBtn.download = `${fileName}.docx`;
+        docxBtn.innerHTML = `<button class="word">Word</button>`;
+
+        // Bouton ZIP
+        const zipBtn = document.createElement('a');
+        zipBtn.href = entry.zipUrl;
+        zipBtn.download = `${fileName}.zip`;
+        zipBtn.innerHTML = `<button class="zip">ZIP</button>`;
+
+        // Conteneur des boutons
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.classList.add('download-buttons');
+        buttonsDiv.appendChild(pdfBtn);
+        buttonsDiv.appendChild(docxBtn);
+        buttonsDiv.appendChild(zipBtn);
+
+        // Bouton supprimer
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = "❌";
         deleteBtn.classList.add('deleteBtn');
         deleteBtn.title = "Supprimer cet élément";
+
 
         deleteBtn.addEventListener('click', () => {
             const realIndex = history.length - 1 - index;

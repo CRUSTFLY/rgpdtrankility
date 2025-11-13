@@ -304,6 +304,32 @@ main {
     color: darkred;
 }
 
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    #historyList div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    #historyList .download-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #historyList .download-buttons a button,
+    #historyList button {
+        width: 100%;
+        text-align: center;
+    }
+
+    #historyList button.deleteBtn {
+        align-self: flex-end;
+        font-size: 1.4em;
+        width: auto;
+    }
+}
+
 /* ===== IFRAME ===== */
 iframe {
     width: 100%;
