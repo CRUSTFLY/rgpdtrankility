@@ -5,7 +5,6 @@ import { Document, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumb
 import archiver from "archiver";
 import express from "express";
 import { PassThrough } from "stream";
-import { fileURLToPath } from "url";
 
 /**
  * Retourne { pdfBase64, docxBase64, zipBase64 }.
@@ -309,6 +308,43 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre13), { align: "left"}).moveDown(1);
 		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte13)).moveDown(1);
 		puces13.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
+
+async function ajouterFinDuDocument(pdfPath) {
+    // Charger le PDF existant
+    const existingPdfBytes = fs.readFileSync(pdfPath);
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+    // Utiliser la dernière page
+    const pages = pdfDoc.getPages();
+    const lastPage = pages[pages.length - 1];
+
+    // Charger une police
+    const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    // Texte à centrer
+    const text = "FIN DU DOCUMENT";
+    const fontSize = 14;
+
+    // Calcul centre de la page
+    const { width } = lastPage.getSize();
+    const textWidth = font.widthOfTextAtSize(text, fontSize);
+    const x = (width - textWidth) / 2;
+
+    // Position verticale (marge basse)
+    const y = 40;
+
+    // Dessiner sur la page
+    lastPage.drawText(text, {
+        x,
+        y,
+        size: fontSize,
+        font,
+    });
+
+    // Sauvegarder le PDF
+    const pdfBytes = await pdfDoc.save();
+    fs.writeFileSync(pdfPath, pdfBytes);
+}
 		
   pdfDoc.end();
   await pdfFinished;
