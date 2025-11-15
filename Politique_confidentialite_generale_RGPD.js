@@ -619,6 +619,20 @@ const doc = new Document({
           bullet: { level: 0 },
           children: [new TextRun({ text: point, font: "Calibri Light", size: 22 })],
         })),
+		
+		// Fin du document
+		new Paragraph({
+		alignment: "center",
+		spacing: { before: 400 },
+		children: [
+			new TextRun({
+			text: "FIN DU DOCUMENT",
+			bold: true,
+			size: 28,
+			font: "Calibri Bold",
+		}),
+		],
+		}),
       ],
     },
   ],
