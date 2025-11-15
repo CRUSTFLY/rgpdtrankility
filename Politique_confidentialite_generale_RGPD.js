@@ -313,6 +313,23 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.moveDown(2);
 		pdfDoc.font("Calibri Bold").fontSize(14).fillColor("#000000").text("FIN DU DOCUMENT", { align: "center" });
 		
+const pages = pdfDoc.bufferedPageRange(); // Récupère toutes les pages générées
+
+for (let i = 0; i < pages.count; i++) {
+    pdfDoc.switchToPage(i);
+
+    const pageNumber = i + 1;
+
+    pdfDoc
+        .font("Calibri Light")
+        .fontSize(10)
+        .fillColor("#A0A0A0")
+        .text(`Page ${pageNumber}`, {
+            align: "right",
+            baseline: "bottom",
+        });
+}
+		
   pdfDoc.end();
   await pdfFinished;
   const pdfBuffer = Buffer.concat(pdfChunks);
