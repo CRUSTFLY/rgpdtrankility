@@ -5,6 +5,7 @@ import { Document, Paragraph, TextRun, ImageRun, AlignmentType, Footer, PageNumb
 import archiver from "archiver";
 import express from "express";
 import { PassThrough } from "stream";
+import { fileURLToPath } from "url";
 
 /**
  * Retourne { pdfBase64, docxBase64, zipBase64 }.
@@ -363,10 +364,13 @@ const doc = new Document({
 		
 		
 				// --- Logo au centre ---
+				const __filename = fileURLToPath(import.meta.url);
+				const __dirname = path.dirname(__filename);
+				const logoPath = path.join(__dirname, "public", "images", "logo_rgpd_trankility.png");
 				new Paragraph({
 				children: [
 					new ImageRun({
-					data: fs.readFileSync(path.join(__dirname, "../public/images/logo_rgpd_trankility.png")),
+					data: fs.readFileSync(logoPath),
 					transformation: {
 						width: 200,
 						height: 200,
