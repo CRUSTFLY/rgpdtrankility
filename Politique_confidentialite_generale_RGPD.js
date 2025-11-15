@@ -186,7 +186,7 @@ Selon le droit applicable, vous disposez du droit de :
       ];
 
   // --- Génération PDF dans un buffer ---
-  const pdfDoc = new PDFDocument({ margin: 50 });
+  const pdfDoc = new PDFDocument({ margin: 50, bufferPages: true, size: "A4"});
   const pdfStream = new PassThrough();
   const pdfChunks = [];
   pdfStream.on("data", chunk => pdfChunks.push(chunk));
@@ -313,27 +313,25 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.moveDown(2);
 		pdfDoc.font("Calibri Bold").fontSize(14).fillColor("#000000").text("FIN DU DOCUMENT", { align: "center" });
 		
-pdfDoc.flushPages(); // garantit que toutes les pages sont en mémoire
+pdfDoc.flushPages(); 
 
-const range = pdfDoc.bufferedPageRange(); // { start, count }
-const totalPages = range.count; // nombre réel de pages
+const range = pdfDoc.bufferedPageRange();
+const totalPages = range.count;
 
 for (let i = 0; i < totalPages; i++) {
     pdfDoc.switchToPage(i);
 
-    const page = pdfDoc.page;
     const text = `Page ${i + 1} / ${totalPages}`;
 
+    const pageWidth = pdfDoc.page.width;
+    const pageHeight = pdfDoc.page.height;
     const textWidth = pdfDoc.widthOfString(text);
 
-    const x = page.width - textWidth - 20; // 20px du bord droit
-    const y = page.height - 30;           // 30px du bas
-
     pdfDoc
-        .font("Calibri Light")
+        .font("Helvetica") // pour éviter les soucis de police
         .fontSize(10)
         .fillColor("#A0A0A0")
-        .text(text, x, y);
+        .text(text, pageWidth - textWidth - 20, pageHeight - 30);
 }
 		
   pdfDoc.end();
