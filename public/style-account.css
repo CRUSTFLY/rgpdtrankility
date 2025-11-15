@@ -322,25 +322,6 @@ main {
     #historyList .doc-info {
         width: 100%;
     }
-
-    /* Les boutons passent en colonne et prennent toute la largeur */
-    #historyList .download-buttons {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    #historyList .download-buttons a button,
-    #historyList button {
-        width: 100%;
-        text-align: center;
-    }
-
-    /* Bouton de suppression un peu plus petit pour mobile */
-    #historyList button.deleteBtn {
-        align-self: flex-end;
-        font-size: 1.4em;
-        width: auto;
-    }
 }
 
 /* ===== IFRAME ===== */
