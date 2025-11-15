@@ -306,12 +306,24 @@ main {
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
+
+    /* Empêche les débordements et remet en colonne */
     #historyList div {
         flex-direction: column;
         align-items: flex-start;
         gap: 20px;
+        width: 100%;
+        word-wrap: break-word;
+        white-space: normal;
+        overflow-wrap: anywhere;
     }
 
+    /* Les infos (nom + date) reviennent à la ligne proprement */
+    #historyList .doc-info {
+        width: 100%;
+    }
+
+    /* Les boutons passent en colonne et prennent toute la largeur */
     #historyList .download-buttons {
         flex-direction: column;
         width: 100%;
@@ -323,6 +335,7 @@ main {
         text-align: center;
     }
 
+    /* Bouton de suppression un peu plus petit pour mobile */
     #historyList button.deleteBtn {
         align-self: flex-end;
         font-size: 1.4em;
