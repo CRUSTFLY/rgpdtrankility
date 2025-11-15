@@ -364,9 +364,8 @@ const doc = new Document({
 		
 		
 				// --- Logo au centre ---
-				const __filename = fileURLToPath(import.meta.url);
-				const __dirname = path.dirname(__filename);
-				const logoPath = path.join(__dirname, "public", "images", "logo_rgpd_trankility.png");
+				const logoDir = path.resolve("public/images"); 	
+				const logoPath = path.join(logoDir, "logo_rgpd_trankility.png");
 				new Paragraph({
 				children: [
 					new ImageRun({
