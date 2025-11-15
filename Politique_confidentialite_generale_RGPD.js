@@ -313,21 +313,28 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.moveDown(2);
 		pdfDoc.font("Calibri Bold").fontSize(14).fillColor("#000000").text("FIN DU DOCUMENT", { align: "center" });
 		
-const pages = pdfDoc.bufferedPageRange(); // Récupère toutes les pages générées
+const range = pdfDoc.bufferedPageRange(); // { start, count }
+const totalPages = range.start + range.count; // nombre total logique de pages
 
-for (let i = 0; i < pages.count; i++) {
+for (let i = range.start; i < range.start + range.count; i++) {
     pdfDoc.switchToPage(i);
 
-    const pageNumber = i + 1;
+    const pageNumber = i + 1; // numérotation humaine (1-based)
+    const { width, height } = pdfDoc.page;
+
+    // Exemple : "Page X / Y" en bas à droite, 20px du bord droit et 30px du bas
+    const text = `Page ${pageNumber} / ${totalPages}`;
+
+    // Mesure approximative non nécessaire si on positionne par coords
+    const textWidthApprox = 80; // ajuster si besoin
+    const x = width - 20 - textWidthApprox;
+    const y = height - 30;
 
     pdfDoc
-        .font("Calibri Light")
-        .fontSize(10)
-        .fillColor("#A0A0A0")
-        .text(`Page ${pageNumber}`, {
-            align: "right",
-            baseline: "bottom",
-        });
+      .font("Calibri Light")
+      .fontSize(10)
+      .fillColor("#A0A0A0")
+      .text(text, x, y);
 }
 		
   pdfDoc.end();
