@@ -745,8 +745,21 @@ footer {
     height: 100%;
     width: 0%;
     background: #000;
+    position: relative;
     transition: width 0.3s ease;
 }
+
+#SuivideConformite .progress-bar span {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: #f4d03f;
+    font-weight: bold;
+    font-family: "Calibri Bold", sans-serif;
+    line-height: 18px; /* pour centrer verticalement */
+    pointer-events: none; /* ne bloque pas le clic sur la barre */
+}
+
 
 /* Bloc de chaque sous-section */
 #SuivideConformite .conformite-section {

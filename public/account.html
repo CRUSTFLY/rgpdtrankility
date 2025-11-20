@@ -75,6 +75,7 @@
             <h2>Suivi de conformité</h2>
 			<div class="progress-container">
 				<div class="progress-bar" id="progressBar"></div>
+				<span id="progressText">0%</span>
 			</div>
             <div id="SuivideConformiteContent">
 			    <!-- SECTION TEST 1 -->
@@ -328,9 +329,14 @@ function updateProgressBar() {
     if (filesData.test1.length > 0) completed++;
     if (filesData.test2.length > 0) completed++;
 
-    const percentage = (completed / totalSections) * 100;
-    document.getElementById("progressBar").style.width = percentage + "%";
+    const percentage = Math.round((completed / totalSections) * 100);
+    const bar = document.getElementById("progressBar");
+    const text = document.getElementById("progressText");
+
+    bar.style.width = percentage + "%";
+    text.textContent = percentage + "%";
 }
+
 </script>
 <script src="header.js"></script>
 </body>
