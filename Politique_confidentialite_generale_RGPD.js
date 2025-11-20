@@ -185,160 +185,119 @@ Selon le droit applicable, vous disposez du droit de :
         "Formuler une réclamation auprès de la CNIL dont le site internet est accessible à l’adresse suivante www.cnil.fr et le siège est situé 3 Place de Fontenoy – TSA 80715 - 75334 Paris Cedex 07",
       ];
 
-  // --- Génération PDF dans un buffer ---
-  const pdfDoc = new PDFDocument({ margin: 50, bufferPages: true, size: "A4"});
-  const pdfStream = new PassThrough();
-  const pdfChunks = [];
-  pdfStream.on("data", chunk => pdfChunks.push(chunk));
-  const pdfFinished = new Promise((resolve, reject) => {
-    pdfStream.on("end", resolve);
-    pdfStream.on("error", reject);
+// --- Génération PDF dans un buffer ---
+const pdfDoc = new PDFDocument({ margin: 50, bufferPages: true, size: "A4" }); 
+const pdfStream = new PassThrough();
+const pdfChunks = [];
+pdfStream.on("data", chunk => pdfChunks.push(chunk));
+const pdfFinished = new Promise((resolve, reject) => {
+  pdfStream.on("end", resolve);
+  pdfStream.on("error", reject);
+});
+pdfDoc.pipe(pdfStream);
+
+// --- Polices ---
+const fontsDir = path.resolve("public/fonts"); 
+if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) 
+  pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf")); 
+if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) 
+  pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
+
+// --- Nettoyage du texte ---
+const clean = txt =>
+  (txt || "")
+    .replace(/[“”«»]/g, '"')
+    .replace(/[’‘]/g, "'")
+    .replace(/[–—]/g, "-")
+    .replace(/[•·‣◦▪]/g, "-")
+    .replace(/[^\x09\x0A\x0D\x20-\x7EÀ-ÿ€]/g, "")
+    .trim();
+
+// --- PAGE 1 : Page de garde ---
+const pageWidth = pdfDoc.page.width;
+const pageHeight = pdfDoc.page.height;
+
+// Titre
+pdfDoc
+  .font("Calibri Bold")
+  .fontSize(32)
+  .fillColor("#ebc015")
+  .text(titre, pageWidth / 2 - 250, pageHeight / 2 - 100, {
+    width: 500,
+    align: "center",
   });
-  pdfDoc.pipe(pdfStream);
-  
-		// Polices 
-		const fontsDir = path.resolve("public/fonts"); 
 
-		if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) 
-		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf")); 
+// Logo
+const logoPath = path.resolve("public/images/logo_rgpd_trankility.png");
+if (fs.existsSync(logoPath)) {
+  pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
+} else {
+  console.warn("⚠️ Logo introuvable :", logoPath);
+}
 
-		if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) 
-		pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
-		
-		  // ---- Nettoyage du texte ----
-		const clean = txt =>
-		(txt || "")
-		.replace(/[“”«»]/g, '"')
-		.replace(/[’‘]/g, "'")
-		.replace(/[–—]/g, "-")
-		.replace(/[•·‣◦▪]/g, "-")
-		.replace(/[^\x09\x0A\x0D\x20-\x7EÀ-ÿ€]/g, "") // supprime caractères invisibles
-		.trim();
+// --- PAGE 2 : Contenu principal ---
+pdfDoc.addPage();
 
-		// === PAGE 1 : Page de garde ===
-		const pageWidth = pdfDoc.page.width;
-		const pageHeight = pdfDoc.page.height;
+// Exemple de blocs (répéter pour tous les blocs)
+pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(introduction), { align: "justify"}).moveDown(1);
 
-		// Titre centré verticalement
-		pdfDoc
-			.font("Calibri Bold")
-			.fontSize(32)
-			.fillColor("#ebc015")
-			.text(titre, pageWidth / 2 - 250, pageHeight / 2 - 100, {
-				width: 500,
-				align: "center",
-			});
+// Bloc 1
+pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre1), { align: "left"}).moveDown(1);
+pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte1)).moveDown(1);
 
-		// Logo centré sous le titre
-		const logoPath = path.resolve("public/images/logo_rgpd_trankility.png");
-		if (fs.existsSync(logoPath)) {
-			pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
-		} else {
-			console.warn("⚠️ Logo introuvable :", logoPath);
-		}
+// ... répéter tous les blocs jusqu'au Bloc 13 ...
 
-		// === PAGE 2 : Contenu principal ===
-		pdfDoc.addPage();
-		
-		//drawHeader();
-		//pdfDoc.on("pageAdded", drawHeader);
-		
-		// ---- Titres ----
-		//pdfDoc.font("Calibri Light").fontSize(22).fillColor("#ebc015").text(clean(titre), { align: "center"}).moveDown(1);
+// FIN DU DOCUMENT
+pdfDoc.moveDown(2);
+pdfDoc.font("Calibri Bold").fontSize(14).fillColor("#000000").text("FIN DU DOCUMENT", { align: "center" });
 
-		// ---- Introduction ----
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(introduction), { align: "justify"}).moveDown(1);
-		
-		// ---- Bloc 1 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre1), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte1)).moveDown(1);
+pdfDoc.end();
+await pdfFinished;
 
-		// ---- Bloc 2 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre2), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte2)).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte22), {indent: 30}).moveDown(1);
+// --- AJOUT DES NUMÉROS DE PAGE APRÈS GÉNÉRATION ---
+const tempDoc = new PDFDocument({ autoFirstPage: false });
+const tempStream = new PassThrough();
+const tempChunks = [];
+tempStream.on("data", chunk => tempChunks.push(chunk));
+const tempFinished = new Promise((resolve, reject) => {
+    tempStream.on("end", resolve);
+    tempStream.on("error", reject);
+});
+tempDoc.pipe(tempStream);
 
-		// ---- Bloc 3 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre3), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte3)).moveDown(1);
-		puces3.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte32), { align: "justify" }).moveDown(1);
-
-		// ---- Bloc 4 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre4), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte4)).moveDown(1);
-		puces4.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
-
-		// ---- Bloc 5 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre5), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte5)).moveDown(1);
-		puces5.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
-
-		// ---- Bloc 6 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre6), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte6)).moveDown(1);
-
-		// ---- Bloc 7 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre7), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte7)).moveDown(1);
-		puces7.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte72)).moveDown(1);
-	
-		// ---- Bloc 8 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre8), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte8)).moveDown(1);
-
-		// ---- Bloc 9 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre9), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte9)).moveDown(1);
-	
-		// ---- Bloc 10 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre10), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte10)).moveDown(1);
-		
-		// ---- Bloc 11 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre11), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte11)).moveDown(1);
-		
-		// ---- Bloc 12 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre12), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte12)).moveDown(1);
-
-		// ---- Bloc 13 ----
-		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre13), { align: "left"}).moveDown(1);
-		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte13)).moveDown(1);
-		puces13.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
-
-		// ---- Fin du document ----
-		pdfDoc.moveDown(2);
-		pdfDoc.font("Calibri Bold").fontSize(14).fillColor("#000000").text("FIN DU DOCUMENT", { align: "center" });
-		
-pdfDoc.flushPages(); 
-
-const range = pdfDoc.bufferedPageRange();
-const totalPages = range.count;
+const pageRange = pdfDoc.bufferedPageRange();
+const totalPages = pageRange.count;
 
 for (let i = 0; i < totalPages; i++) {
-    pdfDoc.switchToPage(i);
+    // Nouvelle page
+    tempDoc.addPage({
+        size: pdfDoc.bufferedPage(i).size,
+        margin: 0
+    });
 
-    const text = `Page ${i + 1} / ${totalPages}`;
+    // Copier la page existante
+    tempDoc.image(pdfDoc.bufferedPage(i).buffer, 0, 0);
 
-    const pageWidth = pdfDoc.page.width;
-    const pageHeight = pdfDoc.page.height;
-    const textWidth = pdfDoc.widthOfString(text);
+    // Numéro de page
+    const label = `Page ${i + 1}`;
+    const textWidth = tempDoc.widthOfString(label);
+    const pageWidth = tempDoc.page.width;
+    const pageHeight = tempDoc.page.height;
 
-    pdfDoc
-        .font("Helvetica") // pour éviter les soucis de police
+    tempDoc
+        .font("Helvetica")
         .fontSize(10)
-        .fillColor("#A0A0A0")
-        .text(text, pageWidth - textWidth - 20, pageHeight - 30);
+        .fillColor("#888888")
+        .text(label, pageWidth - textWidth - 20, pageHeight - 30);
 }
-		
-  pdfDoc.end();
-  await pdfFinished;
-  const pdfBuffer = Buffer.concat(pdfChunks);
-  const pdfBase64 = pdfBuffer.toString("base64");
-  
+
+tempDoc.end();
+await tempFinished;
+
+// --- BUFFER FINAL ---
+const finalBuffer = Buffer.concat(tempChunks);
+const pdfBase64 = finalBuffer.toString("base64");
+ 
 // --- DOCX ---
 const doc = new Document({
   sections: [
