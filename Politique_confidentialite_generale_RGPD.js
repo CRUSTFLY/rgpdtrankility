@@ -296,7 +296,7 @@ await tempFinished;
 
 // --- BUFFER FINAL ---
 const pdfBuffer = Buffer.concat(tempChunks);
-const pdfBase64 = finalBuffer.toString("base64");
+const pdfBase64 = pdfBuffer.toString("base64");
  
 // --- DOCX ---
 const doc = new Document({
