@@ -79,18 +79,64 @@
 				</div>
 			</div>
             <div id="SuivideConformiteContent">
-			    <!-- SECTION TEST 1 -->
 				<div class="conformite-section">
-					<h3>Test 1</h3>
-					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'test1')">
-					<div id="test1-list"></div>
+					<h3>Politique de confidentialité générale RGPD</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section11')">
+					<div id="section11-list"></div>
+					<h3>Tiers charte RGPD</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section12')">
+					<div id="section12-list"></div>
 				</div>
-
-				<!-- SECTION TEST 2 -->
 				<div class="conformite-section">
-					<h3>Test 2</h3>
-					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'test2')">
-					<div id="test2-list"></div>
+					<h3>Gestion de la demande exercice de droits DCP</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section21')">
+					<div id="section21-list"></div>
+				</div>
+				<div class="conformite-section">
+					<h3>Consentement éclairé des collaborateurs</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section31')">
+					<div id="section31-list"></div>
+				</div>
+				<div class="conformite-section">
+					<h3>Clause de candidature négative</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section41')">
+					<div id="section41-list"></div>
+					<h3>Engagement de confidentialité partenaires</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section42')">
+					<div id="section42-list"></div>
+				</div>
+				<div class="conformite-section">
+					<h3>Politique de conservation DCP</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section51')">
+					<div id="section51-list"></div>
+				</div>
+				<div class="conformite-section">
+					<h3>Charte informatique</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section61')">
+					<div id="section61-list"></div>
+				</div>
+				<div class="conformite-section">
+					<h3>Registre des traitements</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section71')">
+					<div id="section71-list"></div>
+				</div>
+				<div class="conformite-section">
+					<h3>Gestion de la violation de données</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section81')">
+					<div id="section81-list"></div>
+				</div>
+				<div class="conformite-section">
+					<h3>Procédure de contrôle CNIL</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section91')">
+					<div id="section91-list"></div>
+				</div>
+				<div class="conformite-section">
+					<h3>Politique externe de protection des données</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section101')">
+					<div id="section101-list"></div>
+					<h3>Politique interne de protection des données</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'section102')">
+					<div id="section102-list"></div>
 				</div>
 			</div>
         </section>
@@ -280,8 +326,19 @@ function showHistory() {
 
 /* --- Suivi de conformité --- */
 const filesData = {
-    test1: [],
-    test2: []
+    section11: [],
+    section12: [],
+	section21: [],
+	section31: [],
+	section41: [],
+	section42: [],
+	section51: [],
+	section61: [],
+	section71: [],
+	section81: [],
+	section91: [],
+	section101: [],
+	section102: [],
 };
 
 function handleFiles(event, section) {
@@ -345,8 +402,19 @@ function updateProgressBar() {
     const totalSections = 2;
     let completed = 0;
 
-    if (filesData.test1.length > 0) completed++;
-    if (filesData.test2.length > 0) completed++;
+    if (filesData.section11.length > 0) completed++;
+	if (filesData.section12.length > 0) completed++;
+	if (filesData.section21.length > 0) completed++;
+	if (filesData.section31.length > 0) completed++;
+	if (filesData.section41.length > 0) completed++;
+	if (filesData.section42.length > 0) completed++;
+	if (filesData.section51.length > 0) completed++;
+	if (filesData.section61.length > 0) completed++;
+	if (filesData.section71.length > 0) completed++;
+	if (filesData.section81.length > 0) completed++;
+	if (filesData.section91.length > 0) completed++;
+	if (filesData.section101.length > 0) completed++;
+	if (filesData.section102.length > 0) completed++;
 
     const percentage = Math.round((completed / totalSections) * 100);
     const bar = document.getElementById("progressBar");
