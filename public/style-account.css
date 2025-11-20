@@ -596,11 +596,14 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .btn-gendoc {
-        display: block;        /* prend toute la ligne */
-        margin: 10px auto;     /* centre horizontalement */
-        text-align: center;    /* assure le centrage du texte */
+    .btn-gendoc {    
+        margin: 10px auto;  
+        text-align: center; 
+        display: inline-flex;     
+        margin-left: auto;       
+        margin-right: auto;  		
     }
+	
 }
 
 /* ===== REGENERER UN DOCUMENT ===== */
