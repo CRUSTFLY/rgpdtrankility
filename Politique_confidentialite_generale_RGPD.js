@@ -313,61 +313,40 @@ Selon le droit applicable, vous disposez du droit de :
 		pdfDoc.moveDown(2);
 		pdfDoc.font("Calibri Bold").fontSize(14).fillColor("#000000").text("FIN DU DOCUMENT", { align: "center" });
 		
+		
+		
+		
+		
+// === AJOUT DES NUMÉROS DE PAGE ===
+pdfDoc.flushPages(); // important pour charger les pages en mémoire
+
+const range = pdfDoc.bufferedPageRange();
+const totalPages = range.count;
+
+for (let i = 0; i < totalPages; i++) {
+    pdfDoc.switchToPage(i);
+
+    const label = `Page ${i + 1}`;
+    const pageWidth = pdfDoc.page.width;
+    const pageHeight = pdfDoc.page.height;
+    const textWidth = pdfDoc.widthOfString(label);
+
+    pdfDoc
+        .font("Helvetica")
+        .fontSize(10)
+        .fillColor("#888888")
+        .text(label, pageWidth - textWidth - 20, pageHeight - 30);
+}		
+		
+	
+		
+		
+		
+		
   pdfDoc.end();
   await pdfFinished;
-  
-  
-// === AJOUT DES NUMÉROS DE PAGE ===
-// (on ré-ouvre le PDF généré en mémoire)
-const inputPdf = Buffer.concat(pdfChunks);
-
-const finalDoc = new PDFDocument({ autoFirstPage: false });
-const finalStream = new PassThrough();
-const finalChunks = [];
-finalStream.on("data", c => finalChunks.push(c));
-const finalDone = new Promise(res => finalStream.on("end", res));
-
-finalDoc.pipe(finalStream);
-
-// Lire le PDF source
-const original = new PDFDocument({ bufferPages: true });
-original.on("data", ()=>{}); // obligé
-original.end(inputPdf);
-
-original.on("end", () => {
-    const range = original.bufferedPageRange();
-
-    for (let i = 0; i < range.count; i++) {
-        const page = original.bufferedPage(i);
-
-        finalDoc.addPage({ size: page.size });
-
-        finalDoc.image(page.buffer, 0, 0);
-
-        const label = `Page ${i + 1}`;
-        const width = finalDoc.widthOfString(label);
-        const pw = finalDoc.page.width;
-        const ph = finalDoc.page.height;
-
-        finalDoc
-            .font("Helvetica")
-            .fontSize(10)
-            .fillColor("#888888")
-            .text(label, pw - width - 20, ph - 30);
-    }
-
-    finalDoc.end();
-});
-
-await finalDone;
-
-const pdfBuffer = Buffer.concat(finalChunks);
-const pdfBase64 = pdfBuffer.toString("base64");  
-  
-  
-  
-  
-
+  const pdfBuffer = Buffer.concat(pdfChunks);
+  const pdfBase64 = pdfBuffer.toString("base64");
   
 // --- DOCX ---
 const doc = new Document({
