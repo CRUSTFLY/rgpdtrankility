@@ -801,7 +801,7 @@ footer {
 }
 
 /* Divs de listes de fichiers */
-#SuivideConformite div[id^="section"] {
+#section11-list, #section41-list, #section101-list {
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 20px;
