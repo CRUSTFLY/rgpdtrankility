@@ -321,10 +321,18 @@ function updateSectionList(section) {
 function deleteFile(section, index) {
     // Supprime l’élément du tableau
     filesData[section].splice(index, 1);
+
+    // Réinitialise l’input pour pouvoir re-uploader le même fichier
+    const input = document.querySelector(`#${section}-list`).previousElementSibling;
+    if(input && input.tagName === "INPUT") {
+        input.value = "";
+    }
+
     // Met à jour la liste et la barre
     updateSectionList(section);
     updateProgressBar();
 }
+
 
 function downloadFile(url, filename) {
     const a = document.createElement("a");
