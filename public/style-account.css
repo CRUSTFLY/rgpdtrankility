@@ -594,16 +594,19 @@ footer {
     transform: translateY(-2px); 
 }
 
-/* Responsive */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .btn-gendoc {    
-        margin: 10px auto;  
-        text-align: center; 
-        display: inline-flex;     
-        margin-left: auto;       
-        margin-right: auto;  		
+    #historyList div.history-item {
+        flex-direction: column;     
+        align-items: center;         
+        text-align: center;           
+        gap: 10px;
     }
-	
+
+    #historyList div.history-item a button,
+    #historyList div.history-item button.deleteBtn {
+        margin: 0 auto;                
+    }
 }
 
 /* ===== REGENERER UN DOCUMENT ===== */
