@@ -196,119 +196,116 @@ const pdfFinished = new Promise((resolve, reject) => {
 });
 pdfDoc.pipe(pdfStream);
 
-// --- Polices ---
-const fontsDir = path.resolve("public/fonts");
+		// Polices 
+		const fontsDir = path.resolve("public/fonts"); 
 
-if (fs.existsSync(path.join(fontsDir, "calibril.ttf")))
-  pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf"));
+		if (fs.existsSync(path.join(fontsDir, "calibril.ttf"))) 
+		pdfDoc.registerFont("Calibri Light", path.join(fontsDir, "calibril.ttf")); 
 
-if (fs.existsSync(path.join(fontsDir, "calibrib.ttf")))
-  pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
+		if (fs.existsSync(path.join(fontsDir, "calibrib.ttf"))) 
+		pdfDoc.registerFont("Calibri Bold", path.join(fontsDir, "calibrib.ttf"));
+		
+		  // ---- Nettoyage du texte ----
+		const clean = txt =>
+		(txt || "")
+		.replace(/[“”«»]/g, '"')
+		.replace(/[’‘]/g, "'")
+		.replace(/[–—]/g, "-")
+		.replace(/[•·‣◦▪]/g, "-")
+		.replace(/[^\x09\x0A\x0D\x20-\x7EÀ-ÿ€]/g, "") // supprime caractères invisibles
+		.trim();
 
-// --- Nettoyage du texte ---
-const clean = txt =>
-  (txt || "")
-    .replace(/[“”«»]/g, '"')
-    .replace(/[’‘]/g, "'")
-    .replace(/[–—]/g, "-")
-    .replace(/[•·‣◦▪]/g, "-")
-    .replace(/[^\x09\x0A\x0D\x20-\x7EÀ-ÿ€]/g, "")
-    .trim();
+		// === PAGE 1 : Page de garde ===
+		const pageWidth = pdfDoc.page.width;
+		const pageHeight = pdfDoc.page.height;
 
-// === PAGE 1 : Page de garde ===
-const pageWidth = pdfDoc.page.width;
-const pageHeight = pdfDoc.page.height;
+		// Titre centré verticalement
+		pdfDoc
+			.font("Calibri Bold")
+			.fontSize(32)
+			.fillColor("#ebc015")
+			.text(titre, pageWidth / 2 - 250, pageHeight / 2 - 100, {
+				width: 500,
+				align: "center",
+			});
 
-// Titre
-pdfDoc
-  .font("Calibri Bold")
-  .fontSize(32)
-  .fillColor("#ebc015")
-  .text(titre, pageWidth / 2 - 250, pageHeight / 2 - 100, {
-    width: 500,
-    align: "center",
-  });
+		// Logo centré sous le titre
+		const logoPath = path.resolve("public/images/logo_rgpd_trankility.png");
+		if (fs.existsSync(logoPath)) {
+			pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
+		} else {
+			console.warn("⚠️ Logo introuvable :", logoPath);
+		}
 
-// Logo
-const logoPath = path.resolve("public/images/logo_rgpd_trankility.png");
-if (fs.existsSync(logoPath)) {
-  pdfDoc.image(logoPath, pageWidth / 2 - 75, pageHeight / 2, { width: 150 });
-}
+		// === PAGE 2 : Contenu principal ===
+		pdfDoc.addPage();
 
-// === PAGE 2 : Contenu principal ===
-pdfDoc.addPage();
+		// ---- Introduction ----
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(introduction), { align: "justify"}).moveDown(1);
+		
+		// ---- Bloc 1 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre1), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte1)).moveDown(1);
 
-// Introduction
-pdfDoc
-  .font("Calibri Light")
-  .fontSize(11)
-  .fillColor("#000000")
-  .text(clean(introduction), { align: "justify" })
-  .moveDown(1);
+		// ---- Bloc 2 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre2), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte2)).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte22), {indent: 30}).moveDown(1);
 
-// Bloc 1
-pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre1)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte1)).moveDown(1);
+		// ---- Bloc 3 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre3), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte3)).moveDown(1);
+		puces3.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte32), { align: "justify" }).moveDown(1);
 
-// Bloc 2
-pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre2)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte2)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte22), { indent: 30 }).moveDown(1);
+		// ---- Bloc 4 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre4), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte4)).moveDown(1);
+		puces4.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
 
-// Bloc 3
-pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre3)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte3)).moveDown(1);
-puces3.forEach(point => pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20 }).moveDown(0.3));
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte32), { align: "justify" }).moveDown(1);
+		// ---- Bloc 5 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre5), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte5)).moveDown(1);
+		puces5.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
 
-// Bloc 4
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre4)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte4)).moveDown(1);
-puces4.forEach(point => pdfDoc.text(`• ${point}`, { indent: 20 }).moveDown(0.3));
+		// ---- Bloc 6 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre6), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte6)).moveDown(1);
 
-// Bloc 5
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre5)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte5)).moveDown(1);
-puces5.forEach(point => pdfDoc.text(`• ${point}`, { indent: 20 }).moveDown(0.3));
+		// ---- Bloc 7 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre7), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte7)).moveDown(1);
+		puces7.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte72)).moveDown(1);
+	
+		// ---- Bloc 8 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre8), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte8)).moveDown(1);
 
-// Bloc 6
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre6)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte6)).moveDown(1);
+		// ---- Bloc 9 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre9), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte9)).moveDown(1);
+	
+		// ---- Bloc 10 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre10), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte10)).moveDown(1);
+		
+		// ---- Bloc 11 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre11), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte11)).moveDown(1);
+		
+		// ---- Bloc 12 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre12), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte12)).moveDown(1);
 
-// Bloc 7
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre7)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte7)).moveDown(1);
-puces7.forEach(point => pdfDoc.text(`• ${point}`, { indent: 20 }).moveDown(0.3));
-pdfDoc.text(clean(texte72)).moveDown(1);
+		// ---- Bloc 13 ----
+		pdfDoc.font("Calibri Bold").fontSize(13).fillColor("#ebc015").text(clean(soustitre13), { align: "left"}).moveDown(1);
+		pdfDoc.font("Calibri Light").fontSize(11).fillColor("#000000").text(clean(texte13)).moveDown(1);
+		puces13.forEach(point => {pdfDoc.font("Calibri Light").fontSize(11).text(`• ${point}`, { indent: 20, continued: false }).moveDown(0.3);}); //Puces
 
-// Bloc 8
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre8)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte8)).moveDown(1);
-
-// Bloc 9
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre9)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte9)).moveDown(1);
-
-// Bloc 10
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre10)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte10)).moveDown(1);
-
-// Bloc 11
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre11)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte11)).moveDown(1);
-
-// Bloc 12
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre12)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte12)).moveDown(1);
-
-// Bloc 13
-pdfDoc.font("Calibri Bold").fontSize(13).text(clean(soustitre13)).moveDown(1);
-pdfDoc.font("Calibri Light").fontSize(11).text(clean(texte13)).moveDown(1);
-puces13.forEach(point => pdfDoc.text(`• ${point}`, { indent: 20 }).moveDown(0.3));
-
-// Fin du document
-pdfDoc.moveDown(2);
-pdfDoc.font("Calibri Bold").fontSize(14).text("FIN DU DOCUMENT", { align: "center" });
+		// ---- Fin du document ----
+		pdfDoc.moveDown(2);
+		pdfDoc.font("Calibri Bold").fontSize(14).fillColor("#000000").text("FIN DU DOCUMENT", { align: "center" });
 
 // === AJOUT DES NUMÉROS DE PAGE ===
 pdfDoc.flushPages(); // indispensable
