@@ -73,7 +73,21 @@
         <!-- Suivi de conformité -->
         <section id="SuivideConformite">
             <h2>Suivi de conformité</h2>
-            <div id="SuivideConformiteContent"><p>A venir...</p></div>
+            <div id="SuivideConformiteContent">
+			    <!-- SECTION TEST 1 -->
+				<div class="conformite-section">
+					<h3>Test 1</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'test1')">
+					<div id="test1-list"></div>
+				</div>
+
+				<!-- SECTION TEST 2 -->
+				<div class="conformite-section">
+					<h3>Test 2</h3>
+					<input type="file" accept="application/pdf" multiple onchange="handleFiles(event, 'test2')">
+					<div id="test2-list"></div>
+				</div>
+			</div>
         </section>
 
         <!-- Contact & Support -->
@@ -259,6 +273,61 @@ function showHistory() {
     });
 }
 
+/* --- Suivi de conformité --- */
+const filesData = {
+    test1: [],
+    test2: []
+};
+
+function handleFiles(event, section) {
+    const uploadedFiles = event.target.files;
+
+    for (let file of uploadedFiles) {
+        const fileURL = URL.createObjectURL(file);
+        filesData[section].push({ name: file.name, url: fileURL });
+    }
+
+    updateSectionList(section);
+    updateProgressBar();
+}
+
+function updateSectionList(section) {
+    const container = document.getElementById(section + "-list");
+    container.innerHTML = "";
+
+    filesData[section].forEach(file => {
+        const div = document.createElement("div");
+        div.className = "file-entry";
+
+        div.innerHTML = `
+            <span>${file.name}</span>
+            <div>
+                <button class="btn-view" onclick="window.open('${file.url}', '_blank')">Voir</button>
+                <button class="btn-download" onclick="downloadFile('${file.url}', '${file.name}')">Télécharger</button>
+            </div>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function downloadFile(url, filename) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+}
+
+function updateProgressBar() {
+    const totalSections = 2;
+    let completed = 0;
+
+    if (filesData.test1.length > 0) completed++;
+    if (filesData.test2.length > 0) completed++;
+
+    const percentage = (completed / totalSections) * 100;
+    document.getElementById("progressBar").style.width = percentage + "%";
+}
 </script>
 <script src="header.js"></script>
 </body>

@@ -772,3 +772,62 @@ footer {
     font-size: 0.95rem;
   }
 }
+
+/* Suivi de conformité */
+
+/* Barre de progression */
+#SuivideConformite .progress-container {
+    width: 100%;
+    height: 18px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+#SuivideConformite .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #4caf50;
+    transition: width 0.3s ease;
+}
+
+/* Bloc de chaque sous-section */
+#SuivideConformite .conformite-section {
+    background: #fff;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Fichiers */
+#SuivideConformite .file-entry {
+    display: flex;
+    justify-content: space-between;
+    background: #f5f5f5;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 6px;
+}
+
+/* Boutons fichiers */
+#SuivideConformite .file-entry button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+/* Bouton voir */
+#SuivideConformite .btn-view {
+    background: #2196f3;
+    color: white;
+}
+
+/* Bouton télécharger */
+#SuivideConformite .btn-download {
+    background: #4caf50;
+    color: white;
+}
