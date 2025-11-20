@@ -773,24 +773,7 @@ footer {
   }
 }
 
-/* ===== SUIVI DE CONFORMITÉ ===== */
-#SuivideConformite {
-    padding: 2rem;
-    background: #fffbea;
-    border-top: 2px solid #e5d87f;
-    border-bottom: 2px solid #e5d87f;
-    border-radius: 0;
-    color: #000;
-    font-family: "Calibri Light", sans-serif;
-}
-
-#SuivideConformite h2 {
-    font-family: "Calibri Bold", sans-serif;
-    font-size: 1.8rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #000;
-}
+/* Suivi de conformité */
 
 /* Barre de progression */
 #SuivideConformite .progress-container {
@@ -865,6 +848,7 @@ footer {
     color: #000;
 }
 
+
 /* Responsive */
 @media (max-width: 600px) {
     #SuivideConformite {
@@ -880,4 +864,3 @@ footer {
         padding: 6px 10px;
     }
 }
-
