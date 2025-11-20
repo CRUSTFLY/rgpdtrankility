@@ -848,21 +848,8 @@ footer {
     color: darkred;
 }
 
-#section11-list,
-#section12-list {
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
 
-#section41-list,
-#section42-list {
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-#section101-list,
-#section102-list {
-    margin-top: 10px;
+#section11-list, #section41-list, #section101-list {
     margin-bottom: 20px;
 }
 
