@@ -594,6 +594,15 @@ footer {
     transform: translateY(-2px); 
 }
 
+/* Responsive */
+@media (max-width: 768px) {
+    .btn-gendoc {
+        display: block;        /* prend toute la ligne */
+        margin: 10px auto;     /* centre horizontalement */
+        text-align: center;    /* assure le centrage du texte */
+    }
+}
+
 /* ===== REGENERER UN DOCUMENT ===== */
 
 /* Conteneur principal */
@@ -836,19 +845,50 @@ footer {
     color: darkred;
 }
 
+#section11-list,
+#section12-list {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
 
+#section41-list,
+#section42-list {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+#section101-list,
+#section102-list {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Responsive */
 @media (max-width: 600px) {
     #SuivideConformite {
+        width: 100%;
+        max-width: 100%;
         padding: 1.5rem;
+        box-sizing: border-box;
+        overflow-x: hidden;
     }
 
     #SuivideConformite h2 {
         font-size: 1.4rem;
     }
 
+    /* Entrées de fichiers */
     #SuivideConformite .file-entry {
         flex-direction: column;
         align-items: flex-start;
+        width: 100%; 
+        box-sizing: border-box;
+        gap: 10px;
+    }
+
+    #SuivideConformite .file-entry input[type="file"] {
+        width: 100%; 
+        max-width: 100%;
     }
 
     #SuivideConformite .file-entry button {
