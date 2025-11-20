@@ -75,8 +75,8 @@
             <h2>Suivi de conformité</h2>
 			<div class="progress-container">
 				<div class="progress-bar" id="progressBar">
-					<span id="progressText">0%</span>
 				</div>
+				<span id="progressText">0%</span>
 				
 			</div>
             <div id="SuivideConformiteContent">
@@ -301,7 +301,7 @@ function updateSectionList(section) {
     const container = document.getElementById(section + "-list");
     container.innerHTML = "";
 
-    filesData[section].forEach(file => {
+    filesData[section].forEach((file, index) => {
         const div = document.createElement("div");
         div.className = "file-entry";
 
@@ -310,11 +310,21 @@ function updateSectionList(section) {
             <div>
                 <button class="btn-view" onclick="window.open('${file.url}', '_blank')">Voir</button>
                 <button class="btn-download" onclick="downloadFile('${file.url}', '${file.name}')">Télécharger</button>
+                <button class="btn-delete" onclick="deleteFile('${section}', ${index})">X</button>
             </div>
         `;
 
         container.appendChild(div);
     });
+}
+
+// Supprimer un fichier
+function deleteFile(section, index) {
+    // Supprime l’élément du tableau
+    filesData[section].splice(index, 1);
+    // Met à jour la liste et la barre
+    updateSectionList(section);
+    updateProgressBar();
 }
 
 function downloadFile(url, filename) {

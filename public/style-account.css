@@ -760,6 +760,17 @@ footer {
     pointer-events: none; /* ne bloque pas le clic sur la barre */
 }
 
+#SuivideConformite #progressText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "Calibri Bold", sans-serif;
+    font-weight: bold;
+    color: #f4d03f;
+    pointer-events: none;
+}
+
 
 /* Bloc de chaque sous-section */
 #SuivideConformite .conformite-section {
@@ -815,6 +826,19 @@ footer {
 #SuivideConformite .btn-download:hover {
     background: #f4d03f;
     color: #000;
+}
+
+#SuivideConformite button.deleteBtn {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 1.6em;
+    width: 60px;
+    transition: color 0.3s ease;
+}
+
+#SuivideConformite button.deleteBtn:hover {
+    color: darkred;
 }
 
 
