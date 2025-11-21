@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import { Blob } from "@vercel/blob";
+import Blob from "@vercel/blob";
 import { Client } from "@neondatabase/serverless";
 import { generateDocuments } from "./generateDocs.js";
 import jwt from "jsonwebtoken";
@@ -111,14 +111,17 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const blobUrl = await Blob.upload({
       file: req.file.buffer,
-      name: req.file.originalname
+      name: req.file.originalname,
+      token: process.env.VERCEL_BLOB_TOKEN
     });
+
     res.json({ url: blobUrl });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // -------------------- SAUVEGARDE DANS NEON --------------------
 app.post("/save-document", async (req, res) => {
