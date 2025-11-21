@@ -1,8 +1,10 @@
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
+const registerForm = document.getElementById("registerForm");
+
+registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   try {
@@ -14,12 +16,13 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 
     const data = await res.json();
 
-    if (res.ok) {
-      alert(data.message);
-      window.location.href = "login.html";
-    } else {
+    if (!res.ok) {
       alert(data.error);
+      return;
     }
+
+    alert("Compte créé ! Vous pouvez maintenant vous connecter.");
+    window.location.href = "login.html";
   } catch (err) {
     console.error(err);
     alert("Erreur réseau");

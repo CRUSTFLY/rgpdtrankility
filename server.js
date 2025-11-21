@@ -65,6 +65,34 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+// Route inscription
+app.post("/api/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "Tous les champs sont requis" });
+    }
+
+    // Hachage du mot de passe
+    const password_hash = await bcrypt.hash(password, 10);
+
+    // Insertion dans Neon
+    const result = await client.query(
+      "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email",
+      [name, email, password_hash]
+    );
+
+    res.status(201).json({ user: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    if (err.code === "23505") { // email déjà existant
+      return res.status(400).json({ error: "Email déjà utilisé" });
+    }
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
 // Route login
 app.post("/api/login", async (req, res) => {
   try {
