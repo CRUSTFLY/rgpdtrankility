@@ -6,6 +6,8 @@
     "start": "vercel dev"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "@vercel/blob": "^2.0.0",
     "archiver": "^7.0.1",
     "cors": "^2.8.5",
     "docx": "^9.1.0",
