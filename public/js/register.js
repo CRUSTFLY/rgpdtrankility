@@ -15,7 +15,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     const data = await res.json();
 
     if (res.ok) {
-      alert("Compte créé avec succès !");
+      alert(data.message);
       window.location.href = "login.html";
     } else {
       alert(data.error);
