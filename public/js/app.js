@@ -66,14 +66,26 @@ async function uploadToBlob(file) {
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch("/api/upload", {
-    method: "POST",
-    body: formData
-  });
+  try {
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData
+    });
 
-  const data = await res.json();
-  return data.url;
+    if (!res.ok) {
+      console.error("Erreur réseau API/upload:", res.status, await res.text());
+      return null;
+    }
+
+    const data = await res.json();
+    console.log("URL Blob reçue :", data.url);
+    return data.url;
+  } catch (err) {
+    console.error("Erreur fetch upload:", err);
+    return null;
+  }
 }
+
 
 // -------------------- SAUVEGARDE DANS NEON --------------------
 async function saveDocumentInfo(userId, fileName, blobUrl) {
@@ -87,6 +99,22 @@ async function saveDocumentInfo(userId, fileName, blobUrl) {
   return res.json(); // Retourne la ligne insérée
 }
 
+async function handleFileUpload(file, currentUser) {
+  try {
+    // 1️⃣ Upload vers Blob
+    const blobUrl = await uploadToBlob(file);
+    if (!blobUrl) {
+      console.error("Erreur lors de l'upload du fichier");
+      return;
+    }
+
+    // 2️⃣ Sauvegarde dans Neon
+    const savedDoc = await saveDocumentInfo(currentUser.id, file.name, blobUrl);
+    console.log("Document sauvegardé dans Neon :", savedDoc);
+  } catch (err) {
+    console.error("Erreur upload/sauvegarde :", err);
+  }
+}
 // -------------------- UTILITAIRES --------------------
 function b64toBlob(b64Data, contentType = "", sliceSize = 512) {
   const byteCharacters = atob(b64Data);
@@ -97,34 +125,4 @@ function b64toBlob(b64Data, contentType = "", sliceSize = 512) {
     byteArrays.push(new Uint8Array(byteNumbers));
   }
   return new Blob(byteArrays, { type: contentType });
-}
-
-// -------------------- EXEMPLE D'UTILISATION --------------------
-// Générer et sauvegarder un document
-async function handleDocumentGeneration(formData, documentType, userId) {
-  try {
-    const { pdfBase64, docxBase64, zipBase64 } = await generateDocs(formData, documentType);
-
-    // Convertir PDF en Blob et uploader
-    const pdfBlob = b64toBlob(pdfBase64, "application/pdf");
-    const pdfUrl = await uploadToBlob(new File([pdfBlob], `${formData.nom}_doc.pdf`));
-
-    // Sauvegarder info dans Neon
-    const savedDoc = await saveDocumentInfo(userId, `${formData.nom}_doc.pdf`, pdfUrl);
-
-    console.log("Document sauvegardé :", savedDoc);
-
-  } catch (err) {
-    console.error("Erreur génération/sauvegarde :", err);
-  }
-}
-
-// Exemple ChatGPT
-async function handleChat(message) {
-  try {
-    const reply = await sendChatMessage(message);
-    console.log("Réponse ChatGPT :", reply);
-  } catch (err) {
-    console.error(err);
-  }
 }
