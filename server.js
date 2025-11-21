@@ -4,9 +4,11 @@ import multer from "multer";
 import { Blob } from "@vercel/blob";
 import { Client } from "@neondatabase/serverless";
 import { generateDocuments } from "./generateDocs.js";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const upload = multer(); // pour gérer l'upload de fichiers
+const JWT_SECRET = process.env.JWT_SECRET || "secret_super_sécurisé";
 
 app.use(cors());
 app.use(express.json());
@@ -66,6 +68,39 @@ app.post("/chat", async (req, res) => {
   } catch (err) {
     console.error("Erreur ChatGPT :", err);
     res.status(500).json({ reply: "Erreur lors de la communication avec l'API OpenAI." });
+  }
+});
+
+// Route login
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) return res.status(400).json({ error: "Email et mot de passe requis" });
+
+    const result = await client.query(
+      "SELECT id, name, email, password_hash FROM users WHERE email = $1",
+      [email]
+    );
+
+    if (result.rows.length === 0) return res.status(400).json({ error: "Utilisateur non trouvé" });
+
+    const user = result.rows[0];
+    const match = await bcrypt.compare(password, user.password_hash);
+
+    if (!match) return res.status(400).json({ error: "Mot de passe incorrect" });
+
+    // Générer un token JWT
+    const token = jwt.sign(
+      { id: user.id, name: user.name, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "12h" }
+    );
+
+    res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erreur serveur" });
   }
 });
 

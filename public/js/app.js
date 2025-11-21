@@ -1,3 +1,43 @@
+// -------------------- S'INSCRIRE --------------------
+import express from "express";
+import cors from "cors";
+import { Client } from "@neondatabase/serverless";
+import bcrypt from "bcrypt";
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const client = new Client({ connectionString: process.env.NEON_DATABASE_URL });
+await client.connect();
+
+// Route inscription
+app.post("/api/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "Tous les champs sont requis" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const result = await client.query(
+      `INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email`,
+      [name, email, hashedPassword]
+    );
+
+    res.status(201).json({ user: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    if (err.code === "23505") { // Contrainte unique violation
+      res.status(400).json({ error: "Email déjà utilisé" });
+    } else {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  }
+});
+
 // -------------------- GÉNÉRATION DOCUMENTS --------------------
 async function generateDocs(formData, documentType) {
   const res = await fetch("/generate", {
