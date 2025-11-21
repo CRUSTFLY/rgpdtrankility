@@ -1,13 +1,11 @@
 import express from "express";
 import cors from "cors";
-import multer from "multer";
-import { uploadFile } from "@vercel/blob";
 import { Client } from "@neondatabase/serverless";
 import { generateDocuments } from "./generateDocs.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const app = express();
-const upload = multer(); // pour gérer l'upload de fichiers
 const JWT_SECRET = process.env.JWT_SECRET || "secret_super_sécurisé";
 
 app.use(cors());
@@ -29,12 +27,11 @@ app.post("/generate", async (req, res) => {
       "nom","prenom","entreprise","sigle","adressesiege","cpsiege","villesiege","numtelsiege"
     ];
     const missingFields = requiredFields.filter(f => !formData[f] || formData[f].trim() === "");
-    if(missingFields.length > 0) return res.status(400).json({ error: `Champs manquants: ${missingFields.join(", ")}` });
+    if(missingFields.length > 0)
+      return res.status(400).json({ error: `Champs manquants: ${missingFields.join(", ")}` });
 
     const { pdfBase64, docxBase64, zipBase64 } = await generateDocuments(formData, documentType);
-
     res.json({ pdfBase64, docxBase64, zipBase64 });
-
   } catch(err) {
     console.error("Erreur serveur :", err);
     res.status(500).json({ error: err.message });
@@ -46,15 +43,12 @@ app.post("/chat", async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ reply: "Message manquant" });
 
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  if (!OPENAI_API_KEY) return res.status(500).json({ reply: "Clé API OpenAI manquante côté serveur." });
-
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENAI_API_KEY}`
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
@@ -66,7 +60,7 @@ app.post("/chat", async (req, res) => {
     const reply = data?.choices?.[0]?.message?.content || "Pas de réponse reçue.";
     res.json({ reply });
   } catch (err) {
-    console.error("Erreur ChatGPT :", err);
+    console.error(err);
     res.status(500).json({ reply: "Erreur lors de la communication avec l'API OpenAI." });
   }
 });
@@ -75,7 +69,6 @@ app.post("/chat", async (req, res) => {
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     if (!email || !password) return res.status(400).json({ error: "Email et mot de passe requis" });
 
     const result = await client.query(
@@ -87,16 +80,9 @@ app.post("/api/login", async (req, res) => {
 
     const user = result.rows[0];
     const match = await bcrypt.compare(password, user.password_hash);
-
     if (!match) return res.status(400).json({ error: "Mot de passe incorrect" });
 
-    // Générer un token JWT
-    const token = jwt.sign(
-      { id: user.id, name: user.name, email: user.email },
-      JWT_SECRET,
-      { expiresIn: "12h" }
-    );
-
+    const token = jwt.sign({ id: user.id, name: user.name, email: user.email }, JWT_SECRET, { expiresIn: "12h" });
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
   } catch (err) {
     console.error(err);
@@ -104,25 +90,7 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// -------------------- UPLOAD VERS BLOB --------------------
-app.post("/upload", upload.single("file"), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "Fichier manquant" });
-
-  try {
-    const blobUrl = await uploadFile({
-      file: req.file.buffer,           // Buffer du fichier
-      name: req.file.originalname,     // Nom du fichier
-      token: process.env.VERCEL_BLOB_TOKEN // Ton token Blob
-    });
-
-    res.json({ url: blobUrl });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// -------------------- SAUVEGARDE DANS NEON --------------------
+// Sauvegarde d'infos document dans Neon
 app.post("/save-document", async (req, res) => {
   const { userId, fileName, blobUrl } = req.body;
   if (!userId || !fileName || !blobUrl) return res.status(400).json({ error: "Champs manquants" });
