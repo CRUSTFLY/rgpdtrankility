@@ -1,41 +1,51 @@
 import express from "express";
 import cors from "cors";
+import multer from "multer";
+import { Blob } from "@vercel/blob";
+import { Client } from "@neondatabase/serverless";
 import { generateDocuments } from "./generateDocs.js";
 
 const app = express();
+const upload = multer(); // pour gérer l'upload de fichiers
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// -------------------- NEON --------------------
+const client = new Client({ connectionString: process.env.NEON_DATABASE_URL });
+await client.connect();
+
+// -------------------- ROUTES --------------------
+
+// Génération documents
 app.post("/generate", async (req, res) => {
-    try {
-        const { formData, documentType } = req.body;
+  try {
+    const { formData, documentType } = req.body;
 
-        // Vérification champs
-        const requiredFields = ["nom","prenom","entreprise","sigle","adressesiege","cpsiege","villesiege","numtelsiege"];
-        const missingFields = requiredFields.filter(f => !formData[f] || formData[f].trim() === "");
-        if(missingFields.length > 0) return res.status(400).json({ error: `Champs manquants: ${missingFields.join(", ")}` });
+    const requiredFields = [
+      "nom","prenom","entreprise","sigle","adressesiege","cpsiege","villesiege","numtelsiege"
+    ];
+    const missingFields = requiredFields.filter(f => !formData[f] || formData[f].trim() === "");
+    if(missingFields.length > 0) return res.status(400).json({ error: `Champs manquants: ${missingFields.join(", ")}` });
 
-        const { pdfBase64, docxBase64, zipBase64 } = await generateDocuments(formData, documentType);
+    const { pdfBase64, docxBase64, zipBase64 } = await generateDocuments(formData, documentType);
 
-        res.json({ pdfBase64, docxBase64, zipBase64 });
+    res.json({ pdfBase64, docxBase64, zipBase64 });
 
-    } catch(err) {
-        console.error("Erreur serveur :", err);
-        res.status(500).json({ error: err.message });
-    }
+  } catch(err) {
+    console.error("Erreur serveur :", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// -------------------- ROUTE CHATGPT / IARGPD --------------------
+// ChatGPT
 app.post("/chat", async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ reply: "Message manquant" });
 
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  if (!OPENAI_API_KEY) {
-    console.error("Erreur : la variable d'environnement OPENAI_API_KEY n'est pas définie !");
-    return res.status(500).json({ reply: "Clé API OpenAI manquante côté serveur." });
-  }
+  if (!OPENAI_API_KEY) return res.status(500).json({ reply: "Clé API OpenAI manquante côté serveur." });
 
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -51,8 +61,6 @@ app.post("/chat", async (req, res) => {
     });
 
     const data = await response.json();
-    console.log("Réponse OpenAI brute :", JSON.stringify(data, null, 2));
-
     const reply = data?.choices?.[0]?.message?.content || "Pas de réponse reçue.";
     res.json({ reply });
   } catch (err) {
@@ -61,6 +69,42 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+// -------------------- UPLOAD VERS BLOB --------------------
+app.post("/upload", upload.single("file"), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "Fichier manquant" });
+
+  try {
+    const blobUrl = await Blob.upload({
+      file: req.file.buffer,
+      name: req.file.originalname
+    });
+    res.json({ url: blobUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// -------------------- SAUVEGARDE DANS NEON --------------------
+app.post("/save-document", async (req, res) => {
+  const { userId, fileName, blobUrl } = req.body;
+  if (!userId || !fileName || !blobUrl) return res.status(400).json({ error: "Champs manquants" });
+
+  try {
+    const result = await client.query(
+      "INSERT INTO documents(user_id, file_name, blob_url) VALUES($1, $2, $3) RETURNING *",
+      [userId, fileName, blobUrl]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// -------------------- FRONTEND STATIQUE --------------------
+app.use(express.static("public"));
+
+// -------------------- SERVER --------------------
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
-
